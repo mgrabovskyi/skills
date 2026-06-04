@@ -3,6 +3,9 @@ name: session-handoff
 description: Use when a multi-session leader workflow needs to be paused and resumed in a fresh chat — strategy planning, roadmap review, hiring loop, postmortem drafting, vendor evaluation, OKR shaping, performance-review writing. Triggers on phrases like "hand off this session", "compact this chat for tomorrow", "save my state and pick up later", "I'm running out of context", "create a handoff doc", "checkpoint this conversation", or "snapshot this work for the next session". Produces a structured handoff focused on decisions, asks, and stakes — not a chat summary — and writes it to a destination the user picks (temp file, project state file, Notion page, or Slack canvas).
 ---
 
+> **Deprecated as of v0.2.0.** This skill is superseded by the harness commands `/mg-harness:compact` (writes a structured handoff at end of session) and the `SessionStart` hook (auto-reloads it on the next session). It is preserved here for history. See [README.md](../../../README.md#5--multi-session-work-loses-state-and-you-re-derive-it-every-time) failure mode #5.
+
+
 # Session Handoff
 
 Compact the current conversation into a **structured leader-shaped artifact** so a fresh agent — or future-you — can pick up the work without re-deriving context.
