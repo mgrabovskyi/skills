@@ -18,21 +18,25 @@
   ],
   "userConfig": {
     "verify_command": {
+      "title": "Verify command",
       "type": "string",
       "description": "Shell command run before every Edit/Write tool call (PreToolUse hook). Should exit 0 on success, non-zero on failure. Examples: 'npm run lint --silent', 'pnpm typecheck', 'cargo check --quiet'. Leave empty to disable.",
       "default": ""
     },
     "test_command": {
+      "title": "Test command",
       "type": "string",
       "description": "Shell command run by /mg-harness:verify. Examples: 'npm test --silent', 'pytest -q', 'cargo test --quiet'. Leave empty to skip the test step.",
       "default": ""
     },
     "drift_check_enabled": {
+      "title": "Enable drift check",
       "type": "boolean",
       "description": "Re-inject the current plan into context on every prompt (UserPromptSubmit hook) to combat drift.",
       "default": true
     },
     "open_pr_with_gh": {
+      "title": "Open PR with gh",
       "type": "boolean",
       "description": "If true and the GitHub CLI (gh) is installed, /mg-harness:finish-work will open a PR automatically.",
       "default": true
