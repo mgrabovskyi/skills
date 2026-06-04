@@ -1,13 +1,17 @@
 {
-  "name": "mgrabovskyi-skills",
+  "name": "mg-harness",
+  "description": "Claude Code skills and harness rituals for engineering leaders.",
   "owner": {
     "name": "Michael Grabovskyi"
   },
   "plugins": [
     {
-      "name": "mgrabovskyi-skills",
+      "name": "mg-harness",
+      "description": "Skills + harness — auto-triggered expertise plus slash commands, hooks, and subagents for long-running multi-session work.",
       "source": "./",
-      "description": "Claude Code skills for engineering leaders — daily code work, people and process operations, and cross-cutting workflow tools."
+      "version": "0.2.0",
+      "category": "workflow",
+      "keywords": ["claude-code", "engineering-leader", "agent-harness", "long-running"]
     }
   ]
 }

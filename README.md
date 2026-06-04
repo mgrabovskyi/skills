@@ -1,21 +1,32 @@
-# mgrabovskyi-skills
+# mg-harness
 
-**[Claude Code](https://docs.claude.com/en/docs/claude-code) skills for engineering leaders.**
+**[Claude Code](https://docs.claude.com/en/docs/claude-code) skills and harness rituals for engineering leaders.**
 
-The coding-agent ecosystem optimizes for engineers writing code. An engineering leader's job is wider than that — code, operational queues, communication, decisions. These skills are the parts of that wider job I've shaped Claude around. They're small, opinionated, and meant to make your week *less* reactive, not just faster.
+The coding-agent ecosystem optimizes for engineers writing code. An engineering leader's job is wider than that — code, operational queues, communication, decisions, multi-week initiatives that span dozens of sessions. The skills and rituals here are the parts of that wider job I've shaped Claude around. They're small, opinionated, and meant to make your week *less* reactive, not just faster.
 
 ## Quickstart (30-second setup)
 
-```bash
+```
 /plugin marketplace add mgrabovskyi/skills
-/plugin install mgrabovskyi-skills@mgrabovskyi-skills
+/plugin install mg-harness@mg-harness
 ```
 
-That installs the plugin. Skills load on demand from their `description` frontmatter — you describe what you want, the right skill triggers. No commands to memorize.
+That installs the plugin. Two surfaces show up:
 
-## Why these skills exist
+- **Skills** — auto-triggered expertise. You describe what you want; the right skill loads. No commands to memorize.
+- **Harness** — six slash commands (`/mg-harness:start-work`, `/mg-harness:checkpoint`, `/mg-harness:compact`, …), five lifecycle hooks, and three subagents that turn a single session into a reliable multi-session workflow.
 
-I built these to fix three failure modes I kept hitting when applying a coding agent across the whole job, not just code.
+After install, set the two userConfig values for the verification hooks:
+
+```
+/plugin config mg-harness
+```
+
+Set `verify_command` (e.g. `npm run lint --silent`) and `test_command` (e.g. `npm test --silent`) for any repo you'll use the harness in. Both are optional; without them the harness still works, just without the auto-verify gates.
+
+## Why these skills and rituals exist
+
+I built these to fix failure modes I kept hitting when applying a coding agent across the whole job, not just code.
 
 ### #1 — The agent overbuilds and "improves" things you didn't ask it to touch
 
@@ -27,12 +38,11 @@ I built these to fix three failure modes I kept hitting when applying a coding a
 
 **The Fix** is to load discipline rules **before** the agent writes anything:
 
-- [`karpathy-coding-guidelines`](./skills/engineering/karpathy-coding-guidelines/SKILL.md) — surfaces assumptions, enforces minimal diffs, demands verifiable success criteria, and pushes back against speculative abstraction or unrequested cleanup.
+- [`karpathy-coding-guidelines`](skills/engineering/karpathy-coding-guidelines/SKILL.md) — surfaces assumptions, enforces minimal diffs, demands verifiable success criteria, and pushes back against speculative abstraction or unrequested cleanup.
 
 The bar to clear: every changed line traces directly back to what you asked for.
 
-> [!TIP]
-> Install this skill on the repo *before* the first agent-written change, not after. Once a codebase has been "improved" by an undisciplined agent, the cleanup cost is higher than the original work.
+> **Tip.** Install this skill on the repo *before* the first agent-written change, not after. Once a codebase has been "improved" by an undisciplined agent, the cleanup cost is higher than the original work.
 
 ### #2 — Triage is half mechanical work and half judgment, and the mechanical half eats your week
 
@@ -44,20 +54,9 @@ The bar to clear: every changed line traces directly back to what you asked for.
 
 **The Fix** is to layer agent behavior *on top of* Linear's native triage, not in place of it:
 
-- [`linear-triage-automation`](./skills/management/linear-triage-automation/SKILL.md) — runs when an issue enters Triage. Handles only the fuzzy parts: free-text priority parsing, duplicate confirmation, domain inference, and the decision to move out of Triage or leave for a human. Org-agnostic — takes a routing table and a fallback owner from the calling team.
-
-<details>
-<summary>What this skill <em>refuses</em> to do</summary>
-
-The skill is explicit about scope. Anything expressible as a Triage Rule belongs in Linear, not in the agent:
-
-- `label → assignee`, `label → priority`, `label → team` → Triage Rule
-- Assignee suggestions, related-issue surfacing → Triage Intelligence (read its output; don't duplicate it)
-- Free-text priority parsing, duplicate confirmation, domain inference from title + description → this skill
+- [`linear-triage-automation`](skills/management/linear-triage-automation/SKILL.md) — runs when an issue enters Triage. Handles only the fuzzy parts: free-text priority parsing, duplicate confirmation, domain inference, and the decision to move out of Triage or leave for a human. Org-agnostic — takes a routing table and a fallback owner from the calling team.
 
 If a triage task can be expressed deterministically, it does not belong in an agent loop.
-
-</details>
 
 ### #3 — Signal is scattered across Slack, Teams, and email, and the morning catch-up has no edges
 
@@ -65,16 +64,13 @@ If a triage task can be expressed deterministically, it does not belong in an ag
 >
 > — Cal Newport, *Deep Work*
 
-**The Problem.** Your morning starts with hundreds of unread items across multiple tools. Most are noise. The useful items — explicit asks, places you were mentioned, things that shipped, things that are blocked — are buried. You spend the first hour of every day doing the same synthesis job.
+**The Problem.** Your morning starts with hundreds of unread items across multiple tools. Most are noise. The useful items — explicit asks, places you were mentioned, things that shipped, things that are blocked — are buried.
 
 **The Fix** is a scheduled task that does the synthesis before you sit down:
 
-- [`morning-briefing`](./skills/productivity/morning-briefing/SKILL.md) — configures a recurring scheduled task. Each morning it pulls the last 24h from Slack/Teams + email and posts a four-section summary (needs from me, mentions, updates, blockers) to a destination you pick (Slack self-DM, private channel, or email).
+- [`morning-briefing`](skills/productivity/morning-briefing/SKILL.md) — configures a recurring scheduled task. Each morning it pulls the last 24h from Slack/Teams + email and posts a four-section summary (needs from me, mentions, updates, blockers) to a destination you pick.
 
-The skill *builds and installs* the task. The task does the daily work. You spend the morning reading the synthesis, not building it.
-
-> [!TIP]
-> Pair the Slack self-DM delivery target with mobile push and your morning briefing reaches you before you open a laptop. Best leverage I've found for a five-second investment.
+The skill *builds and installs* the task. The task does the daily work.
 
 ### #4 — Handoffs between engineers lose context, and the new owner pays the tax
 
@@ -82,53 +78,80 @@ The skill *builds and installs* the task. The task does the daily work. You spen
 >
 > — Frederick P. Brooks Jr., *The Mythical Man-Month*
 
-**The Problem.** An engineer goes on PTO, switches teams, or leaves. Their tickets get reassigned — usually with a one-line comment like "handing this to Bob" — and the new owner spends a day reconstructing where the work actually is. What branch? Which PR? What's already been decided in review? What did the last comment thread agree on? Context lives in three places (Linear, git, GitHub), and the reassignment carries none of it.
+**The Problem.** An engineer goes on PTO, switches teams, or leaves. Their tickets get reassigned — usually with a one-line comment — and the new owner spends a day reconstructing where the work actually is.
 
 **The Fix** is to make context the **precondition** for reassignment, not the afterthought:
 
-- [`linear-handoff`](./skills/management/linear-handoff/SKILL.md) — given two engineers, gathers Linear state plus git branch and PR status for every open ticket, composes a structured handoff comment per ticket (what's done, what's left, key decisions, suggested next steps, quick-start command), shows the drafts back to you for confirmation, and only then posts and reassigns. Requires a Linear MCP, git, and `gh`.
+- [`linear-handoff`](skills/management/linear-handoff/SKILL.md) — given two engineers, gathers Linear state plus git branch and PR status for every open ticket, composes a structured handoff comment per ticket, shows the drafts back to you for confirmation, and only then posts and reassigns.
 
 The skill posts the comment **before** reassigning — the new owner never sees the ticket in their queue without the context already on it.
 
-> [!TIP]
-> Run it once before PTO and once again the day before you return. The pre-return run catches anything that moved while you were out, with the same context discipline applied in reverse.
-
-### #5 — Multi-session strategy work loses state, and you re-derive it every time
+### #5 — Multi-session work loses state, and you re-derive it every time
 
 > "The faintest ink is more powerful than the strongest memory."
 >
 > — Chinese proverb
 
-**The Problem.** The biggest leader work — strategy, roadmap, hiring loops, postmortems, OKR shaping — doesn't fit in one chat. You hit the context limit mid-thought, or you stop for the day. When you come back, the first twenty minutes go to re-explaining where things landed, what was decided, and what's still open. The agent re-asks questions you already answered. Decisions that were *closed* get quietly re-litigated. The cost compounds across sessions.
+**The Problem.** The biggest work — a multi-week refactor, an RFC draft, an OKR shaping exercise, a vendor evaluation, a hiring loop — doesn't fit in one chat. You hit the context limit mid-thought, or you stop for the day. When you come back, the first twenty minutes go to re-explaining where things landed, what was decided, and what's still open. The agent re-asks questions you already answered. Decisions that were *closed* get quietly re-litigated. The cost compounds across sessions.
 
-**The Fix** is to compact each session into a *structured* artifact — not a free-form chat summary — that the next session can load as state:
+**The Fix** is a *full harness*: state files the agent reads on every session start, structured handoffs at every compaction, and lifecycle rituals that make the discipline automatic instead of relying on you to remember it.
 
-- [`session-handoff`](./skills/productivity/session-handoff/SKILL.md) — produces a leader-shaped brief (decisions made, decisions still open, asks, stakes, what the next session should do) and writes it to a destination you pick: temp file, project state file, Notion page, or Slack canvas. The next session reads it, picks up exactly where you left off, and never re-asks resolved questions.
+Six slash commands, five hooks, three subagents, all under the `/mg-harness:` namespace:
 
-The bar to clear: a fresh agent reading the handoff should be able to **act**, not summarize.
+| Command | When | What it does |
+|---|---|---|
+| `/mg-harness:start-work <description>` | Beginning a task | Branches, bootstraps `.claude/state/`, dispatches the **planner** subagent |
+| `/mg-harness:plan [note]` | Plan needs revision | Re-runs the planner |
+| `/mg-harness:checkpoint [note]` | Every 15–20 min during work | Updates `state.md`, appends `CHANGELOG.md`, commits |
+| `/mg-harness:compact [focus]` | At ~50% context | Writes a dense `handoff.md` for the next session |
+| `/mg-harness:verify` | Before review | Runs `test_command` + dispatches the **reviewer** subagent |
+| `/mg-harness:finish-work` | Task complete | Verifies, pushes, optionally opens a PR via `gh` |
 
-> [!TIP]
-> For work that spans weeks — a hiring loop, an OKR draft, a vendor selection — make the destination a Notion page in append mode. Each session adds a dated section; the page becomes the canonical state, and the chat is just the working surface.
+And five hooks that run silently in the background:
+
+- `SessionStart` — auto-injects `state.md`, `plan.md`, `handoff.md`, and the last 50 CHANGELOG entries into context
+- `UserPromptSubmit` — re-anchors the agent to the plan on every prompt (combats drift)
+- `PreToolUse(Edit/Write)` — runs your `verify_command` before any edit lands; exit 2 blocks the edit
+- `PostToolUse(Edit/Write)` — appends a one-line entry to `.claude/state/CHANGELOG.md` for every edit
+- `Stop` — nudges you to checkpoint if state is stale relative to recent diffs
+
+The bar to clear: a fresh agent reading `.claude/state/handoff.md` should be able to **act**, not summarize.
+
+> **Tip.** The harness is for work that lives in files in a git repo — code, strategy docs, RFC drafts, OKR pages, postmortems. Use the same commands across all of them; the discipline is what matters, not the file type. For Notion-only work, use the existing `morning-briefing` skill to surface deltas and treat each Notion page as its own state artifact.
+
+> **Note.** This approach supersedes the earlier `session-handoff` skill, which was a lighter-weight predecessor. It has been moved to `skills/deprecated/`. New work should use the harness commands.
 
 ### Summary
 
-The bet behind this collection: the highest-leverage thing an engineering leader can do with an agent is **not** "have it write more code." It's **shape your existing work so less of it lands on your calendar**. These skills are the part of that bet I've shipped publicly.
+The bet behind this collection: the highest-leverage thing an engineering leader can do with an agent is **not** "have it write more code." It's **shape your existing work so less of it lands on your calendar**, and **make multi-session work survive context resets** so big initiatives don't keep starting from scratch. These skills and harness rituals are the part of that bet I've shipped publicly.
 
 ## Reference
 
 ### Engineering — daily code work
 
-- **[karpathy-coding-guidelines](./skills/engineering/karpathy-coding-guidelines/SKILL.md)** — Karpathy-style coding discipline: surface assumptions, favor minimal diffs, define verifiable success criteria, avoid speculative abstraction. Use before letting Claude write or edit application code.
+- **[karpathy-coding-guidelines](skills/engineering/karpathy-coding-guidelines/SKILL.md)** — Karpathy-style coding discipline: surface assumptions, favor minimal diffs, define verifiable success criteria, avoid speculative abstraction. Use before letting Claude write or edit application code.
 
 ### Management — people, process, operational queues
 
-- **[linear-triage-automation](./skills/management/linear-triage-automation/SKILL.md)** — Event-driven Linear triage: duplicate detection, free-text priority parsing, owner assignment via Triage Intelligence with a routing-table fallback, and moving issues out of the Triage column.
-- **[linear-handoff](./skills/management/linear-handoff/SKILL.md)** — Hand off an engineer's open Linear tickets to another engineer with full context (Linear state + git branch + PR status), as a confirmed batch. PTO coverage, role changes, team transfers.
+- **[linear-triage-automation](skills/management/linear-triage-automation/SKILL.md)** — Event-driven Linear triage: duplicate detection, free-text priority parsing, owner assignment via Triage Intelligence with a routing-table fallback, and moving issues out of the Triage column.
+- **[linear-handoff](skills/management/linear-handoff/SKILL.md)** — Hand off an engineer's open Linear tickets to another engineer with full context (Linear state + git branch + PR status), as a confirmed batch.
 
 ### Productivity — cross-cutting daily workflow
 
-- **[morning-briefing](./skills/productivity/morning-briefing/SKILL.md)** — Recurring daily rollup of Slack/Teams + email activity, delivered as a four-section summary (asks, mentions, updates, blockers) at the time and destination you pick.
-- **[session-handoff](./skills/productivity/session-handoff/SKILL.md)** — Compact the current conversation into a structured leader-shaped handoff (decisions made, decisions open, asks, stakes, next-session prompt) and write it to a temp file, project state file, Notion page, or Slack canvas. Distinct from [`linear-handoff`](./skills/management/linear-handoff/SKILL.md): this is chat→chat, not engineer→engineer.
+- **[morning-briefing](skills/productivity/morning-briefing/SKILL.md)** — Recurring daily rollup of Slack/Teams + email activity, delivered as a four-section summary (asks, mentions, updates, blockers) at the time and destination you pick.
+- **[state-discipline](skills/productivity/state-discipline/SKILL.md)** — Auto-triggers when the agent is writing to `.claude/state/*` files. Enforces the format and conventions of the harness state files: plan, state, handoff, CHANGELOG.
+
+### Harness — long-running work
+
+Six slash commands, listed above in failure mode #5. Each command file is in [`commands/`](commands/); each is a markdown file with frontmatter and can be edited directly.
+
+Three subagents in [`agents/`](agents/), invoked by the commands via the Task tool:
+
+- **[planner](agents/planner.md)** — produces `.claude/state/plan.md`. Reads task description + codebase; writes the plan file only.
+- **[researcher](agents/researcher.md)** — bounded codebase investigation. Returns a compressed report.
+- **[reviewer](agents/reviewer.md)** — independent audit of diff vs. plan. Scores PASS / CONCERNS / FAIL.
+
+Five hook scripts in [`scripts/`](scripts/), wired in [`hooks/hooks.json`](hooks/hooks.json). See the [harness conventions doc](docs/harness-conventions.md) for the full rationale and how to use the state files day-to-day.
 
 ## Layout
 
@@ -140,15 +163,25 @@ The bet behind this collection: the highest-leverage thing an engineering leader
 ├── skills/
 │   ├── engineering/            # daily code work
 │   ├── management/             # people, process, queues
-│   ├── productivity/           # cross-cutting daily workflow
+│   ├── productivity/           # cross-cutting daily workflow (incl. state-discipline)
 │   ├── in-progress/            # drafts not yet ready to ship
 │   └── deprecated/             # retired skills, kept for history
-├── docs/                       # notes and conventions
+├── commands/                   # /mg-harness:* slash commands
+├── agents/                     # planner, researcher, reviewer subagents
+├── hooks/
+│   └── hooks.json              # SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop
+├── scripts/                    # shell scripts invoked by hooks
+├── templates/                  # state file templates (plan, state, handoff, CHANGELOG, project-CLAUDE)
+├── docs/                       # notes and conventions (incl. harness-conventions.md)
 ├── CLAUDE.md                   # contributor rules for this repo
 └── README.md
 ```
 
 A skill is a directory containing `SKILL.md`. The directory name matches the `name` in the frontmatter. Supporting files (templates, longer references) live alongside `SKILL.md` in the same directory and are loaded only when the skill needs them.
+
+A slash command is a single markdown file in `commands/`. The filename (without `.md`) becomes the command name; the YAML frontmatter declares `description`, `allowed-tools`, and `argument-hint`; the body is the prompt template.
+
+A subagent is a single markdown file in `agents/` with YAML frontmatter declaring `name`, `description`, `tools` (allowlist), and `model`. The body is the system prompt.
 
 ## Adding a new skill
 
@@ -157,9 +190,10 @@ A skill is a directory containing `SKILL.md`. The directory name matches the `na
    - People, process, or operational queues → `skills/management/`
    - Cross-cutting daily workflow, not code-specific → `skills/productivity/`
    - Not ready to ship → `skills/in-progress/`
+
 2. **Create** `skills/<bucket>/<skill-name>/SKILL.md` with frontmatter:
 
-   ```markdown
+   ```
    ---
    name: skill-name
    description: One sentence describing when Claude should use this skill — name concrete trigger situations or phrases, not just topics.
@@ -168,12 +202,36 @@ A skill is a directory containing `SKILL.md`. The directory name matches the `na
    # Body
    ```
 
-3. **List it** in the bucket's `README.md` and in the top-level `README.md` Reference section.
+3. **List it** in the bucket's `README.md` (if any) and in the top-level `README.md` Reference section.
+
 4. **Bump** the plugin's `version` in `.claude-plugin/plugin.json` (semver — patch for tweaks, minor for new skills, major for renames or removals).
 
 Skills in `in-progress/` and `deprecated/` **do not** appear in the top-level `README.md`.
 
-See [CLAUDE.md](./CLAUDE.md) for the full contributor rules.
+## Adding a new harness command
+
+1. **Create** `commands/<command-name>.md` with frontmatter:
+
+   ```
+   ---
+   description: What the command does, one sentence.
+   allowed-tools: Read, Write, Edit, Bash, ...
+   argument-hint: <hint shown to the user>
+   ---
+
+   Prompt body. Use $ARGUMENTS for positional args, !`shell command` to inject
+   command output, @path/to/file to inject file contents.
+   ```
+
+2. **If the command needs a subagent**, add it to `agents/` with a narrow `tools` allowlist.
+
+3. **If the command needs background discipline**, add a hook script to `scripts/` and wire it in `hooks/hooks.json`.
+
+4. **List it** in the top-level `README.md` Reference section.
+
+5. **Bump** the plugin version.
+
+See [CLAUDE.md](CLAUDE.md) for the full contributor rules.
 
 ## License
 

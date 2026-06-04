@@ -1,8 +1,41 @@
 {
-  "name": "mgrabovskyi-skills",
-  "version": "0.5.0",
-  "description": "Claude Code skills for engineering leaders — daily code work, people and process operations, and cross-cutting workflow tools.",
+  "name": "mg-harness",
+  "version": "0.2.0",
+  "description": "Claude Code skills and harness rituals for engineering leaders. Auto-triggered skills for triage, briefings, and handoffs — plus slash commands, hooks, and subagents for long-running, multi-session work.",
   "author": {
     "name": "Michael Grabovskyi"
+  },
+  "homepage": "https://github.com/mgrabovskyi/skills",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "engineering-leader",
+    "agent-harness",
+    "long-running",
+    "context-engineering",
+    "linear",
+    "slack"
+  ],
+  "userConfig": {
+    "verify_command": {
+      "type": "string",
+      "description": "Shell command run before every Edit/Write tool call (PreToolUse hook). Should exit 0 on success, non-zero on failure. Examples: 'npm run lint --silent', 'pnpm typecheck', 'cargo check --quiet'. Leave empty to disable.",
+      "default": ""
+    },
+    "test_command": {
+      "type": "string",
+      "description": "Shell command run by /mg-harness:verify. Examples: 'npm test --silent', 'pytest -q', 'cargo test --quiet'. Leave empty to skip the test step.",
+      "default": ""
+    },
+    "drift_check_enabled": {
+      "type": "boolean",
+      "description": "Re-inject the current plan into context on every prompt (UserPromptSubmit hook) to combat drift.",
+      "default": true
+    },
+    "open_pr_with_gh": {
+      "type": "boolean",
+      "description": "If true and the GitHub CLI (gh) is installed, /mg-harness:finish-work will open a PR automatically.",
+      "default": true
+    }
   }
 }
