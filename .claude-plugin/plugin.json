@@ -1,6 +1,6 @@
 {
   "name": "mg-harness",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Claude Code skills and harness rituals for engineering leaders. Auto-triggered skills for triage, briefings, and handoffs — plus slash commands, hooks, and subagents for long-running, multi-session work.",
   "author": {
     "name": "Michael Grabovskyi"

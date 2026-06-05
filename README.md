@@ -172,7 +172,7 @@ Five hook scripts in [`scripts/`](scripts/), wired in [`hooks/hooks.json`](hooks
 │   └── hooks.json              # SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop
 ├── scripts/                    # shell scripts invoked by hooks
 ├── templates/                  # state file templates (plan, state, handoff, CHANGELOG, project-CLAUDE)
-├── docs/                       # notes and conventions (incl. harness-conventions.md)
+├── docs/                       # notes and conventions (harness-conventions.md, workspace-conventions/)
 ├── CLAUDE.md                   # contributor rules for this repo
 └── README.md
 ```
