@@ -52,6 +52,6 @@ After the planner returns:
 
 ## 5. Establish the loop
 
-Once the plan is approved, work the checklist top-to-bottom. After each meaningful change, run `/mg-harness:checkpoint`. At ~50% context use, run `/mg-harness:compact`. When done, run `/mg-harness:finish-work`.
+Once the plan is approved, **load and follow the `karpathy-coding-guidelines` skill before writing any code**: state assumptions before implementing, keep diffs minimal and surgical, no speculative abstraction or unrequested cleanup, and make sure every changed line traces back to a plan item. Then work the checklist top-to-bottom. After each meaningful change, run `/mg-harness:checkpoint`. At ~50% context use, run `/mg-harness:compact`. When done, run `/mg-harness:finish-work`.
 
 **Do not skip the plan step.** A session without a plan in `.claude/state/plan.md` is one drift warning away from going off the rails.
