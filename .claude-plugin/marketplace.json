@@ -9,7 +9,7 @@
       "name": "mg-harness",
       "description": "Skills + harness — auto-triggered expertise plus slash commands, hooks, and subagents for long-running multi-session work.",
       "source": "./",
-      "version": "0.2.1",
+      "version": "0.3.0",
       "category": "workflow",
       "keywords": ["claude-code", "engineering-leader", "agent-harness", "long-running"]
     }

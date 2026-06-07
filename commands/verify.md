@@ -26,6 +26,7 @@ Read `.claude/state/plan.md`. Spot-check that the diff matches the plan:
 - Are there changes to files NOT in the plan? If so, are they justified?
 - Are there plan items still unchecked? Why?
 - Are there changes that look unrelated to the objective? (Scope creep is the most common cause of bad PRs.)
+- Does **every changed line trace back to a plan item or the stated objective**? (`karpathy-coding-guidelines`: surgical changes, no speculative abstraction, no unrequested cleanup.)
 
 If the diff is suspicious, flag concerns to the user before stage 3.
 
@@ -33,7 +34,7 @@ If the diff is suspicious, flag concerns to the user before stage 3.
 
 Dispatch the **reviewer** subagent with this brief:
 
-> Read `.claude/state/plan.md`, then audit the current diff (`git diff` against `origin/main` or `origin/master`). Score the work on: (1) does it accomplish the plan's objective, (2) is the code well-structured, (3) any obvious bugs or regressions, (4) any test gaps. Run any tests you can re-run. Return a structured report with sections: PASS/FAIL/CONCERNS, then specifics.
+> Read `.claude/state/plan.md` and `${CLAUDE_PLUGIN_ROOT}/skills/engineering/karpathy-coding-guidelines/SKILL.md`, then audit the current diff (`git diff` against `origin/main` or `origin/master`). Score the work on: (1) does it accomplish the plan's objective, (2) is the code well-structured, (3) any obvious bugs or regressions, (4) any test gaps, (5) coding discipline — flag out-of-scope changes, speculative abstraction, unrequested refactors, or changed lines that don't trace to the request. Run any tests you can re-run. Return a structured report with sections: PASS/FAIL/CONCERNS, then specifics.
 
 After the reviewer returns, summarize for the user:
 
