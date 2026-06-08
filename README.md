@@ -176,6 +176,7 @@ Six hook scripts in [`scripts/`](scripts/), wired in [`hooks/hooks.json`](hooks/
 ├── templates/                  # state file templates (plan, state, handoff, CHANGELOG, project-CLAUDE)
 ├── docs/                       # notes and conventions (harness-conventions.md, workspace-conventions/)
 ├── CLAUDE.md                   # contributor rules for this repo
+├── CHANGELOG.md                # release history (keepachangelog format)
 └── README.md
 ```
 
