@@ -129,65 +129,61 @@
   .surface ul { margin: 0; padding-left: 18px; color: var(--ink-soft); }
   .surface li { margin-bottom: 6px; }
 
-  /* ===== Session lifecycle visualization ===== */
-  .flow {
-    display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px;
-    margin: 4px 0 30px;
+  /* ===== Session map: legend, chips, vertical timeline ===== */
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12.5px; font-weight: 600; line-height: 1.3;
+    border-radius: 999px; padding: 3px 10px; border: 1px solid transparent; white-space: nowrap;
   }
-  .phase {
-    flex: 1 1 150px; min-width: 150px;
-    background: #20242b; border: 1px solid #313742; border-radius: 12px;
-    padding: 16px 15px 15px; position: relative;
-  }
-  .phase .pnum {
-    width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff;
-    display: grid; place-items: center; font-weight: 800; font-size: 13px; margin-bottom: 11px;
-  }
-  .phase .pcmd {
-    font-family: ui-monospace, Menlo, monospace; font-size: 14px; font-weight: 650;
-    color: #fff; margin-bottom: 6px;
-  }
-  .phase .pcmd .opt { color: var(--hero-soft); font-weight: 400; font-size: 12px; }
-  .phase p { margin: 0; font-size: 13.5px; color: #c8ccd3; line-height: 1.5; }
-  .phase .agent {
-    display: inline-block; margin-top: 11px; font-size: 12px; font-weight: 600;
-    background: var(--accent-soft); color: var(--accent-deep);
-    border-radius: 999px; padding: 3px 10px;
-  }
-  .arrow { align-self: center; color: #4a505b; font-size: 20px; flex: 0 0 auto; }
-  @media (max-width: 760px) { .arrow { display: none; } }
+  .tag .mono { font-family: ui-monospace, Menlo, monospace; font-weight: 650; }
+  .t-cmd   { background: rgba(224,101,74,.16); color: #f3a896; border-color: rgba(224,101,74,.38); }
+  .t-hook  { background: rgba(96,160,214,.15); color: #92c2ef; border-color: rgba(96,160,214,.38); }
+  .t-agent { background: rgba(186,140,224,.16); color: #d0b1f0; border-color: rgba(186,140,224,.38); }
+  .t-file  { background: rgba(255,255,255,.06); color: #cfd3da; border-color: rgba(255,255,255,.16); }
+  .t-skill { background: rgba(108,192,139,.15); color: #8fd6ab; border-color: rgba(108,192,139,.38); }
+  .t-git   { background: rgba(255,255,255,.04); color: #9aa1ab; border-color: rgba(255,255,255,.12); }
 
-  .rail {
-    background: #20242b; border: 1px solid #313742; border-radius: 12px;
-    padding: 18px 20px; margin-bottom: 22px;
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 30px; }
+  .legend .tag { cursor: default; }
+
+  .tl { position: relative; margin: 0 0 8px; padding-left: 32px; }
+  .tl::before { content: ""; position: absolute; left: 9px; top: 10px; bottom: 10px; width: 2px; background: #313742; }
+  .tlnode { position: relative; margin: 0 0 13px; }
+  .tldot {
+    position: absolute; left: -32px; top: 1px; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); color: #fff; display: grid; place-items: center;
+    font-size: 11px; font-weight: 800; border: 3px solid var(--hero); box-sizing: content-box;
   }
-  .rail .rail-label {
-    font-size: 12px; text-transform: uppercase; letter-spacing: .1em; font-weight: 700;
-    color: var(--accent); margin-bottom: 14px;
-    display: flex; align-items: center; gap: 9px;
-  }
-  .rail .rail-label::after { content: ""; flex: 1; height: 1px; background: #313742; }
-  .guards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-  @media (max-width: 860px) { .guards { grid-template-columns: repeat(2, 1fr); } }
-  .guard {
-    background: #14161a; border: 1px solid #2a2e36; border-radius: 10px; padding: 12px 13px;
+  .tldot.evt { background: #60a0d6; }
+  .tlcard { background: #20242b; border: 1px solid #313742; border-radius: 12px; padding: 14px 16px; }
+  .tlcard .h { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+  .tlcard .h .cmd { font-family: ui-monospace, Menlo, monospace; font-size: 15px; font-weight: 700; color: #fff; }
+  .tlcard .h .when { font-size: 11.5px; color: var(--hero-soft); text-transform: uppercase; letter-spacing: .08em; }
+  .tlcard p { margin: 0 0 11px; font-size: 13.5px; color: #c8ccd3; }
+  .tlchips { display: flex; flex-wrap: wrap; gap: 7px; }
+
+  .persist {
+    display: flex; align-items: flex-start; gap: 12px; margin: 0 0 13px; padding: 11px 15px;
+    background: #181c22; border: 1px dashed #3a414c; border-radius: 10px;
     font-size: 13px; color: #c8ccd3;
   }
-  .guard .gi { font-size: 16px; display: block; margin-bottom: 6px; }
-  .guard b { color: #fff; font-weight: 650; display: block; font-size: 12.5px; margin-bottom: 3px; }
+  .persist .pk { color: #92c2ef; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .07em; white-space: nowrap; padding-top: 1px; }
 
   .principle {
-    border-left: 3px solid var(--accent); padding: 6px 0 6px 18px;
-    font-size: 16px; color: #f2efe9; max-width: 720px;
+    border-left: 3px solid var(--accent); padding: 6px 0 6px 18px; margin-top: 26px;
+    font-size: 16px; color: #f2efe9; max-width: 760px;
   }
   .principle b { color: #fff; }
 
-  .agentstrip { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
-  .agentcard {
-    background: #20242b; border: 1px solid #313742; border-radius: 10px; padding: 12px 15px;
-    flex: 1 1 200px; font-size: 13.5px; color: #c8ccd3;
-  }
-  .agentcard b { color: #fff; font-family: ui-monospace, Menlo, monospace; font-size: 13.5px; }
+  /* Reference table */
+  .reftable { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .reftable th, .reftable td { border-bottom: 1px solid var(--line); padding: 11px 13px; text-align: left; vertical-align: top; }
+  .reftable th { background: #faf7f3; font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .reftable tr:last-child td { border-bottom: none; }
+  .reftable .grp td { background: #fbf1ec; font-weight: 800; color: var(--accent-deep); font-size: 11.5px; text-transform: uppercase; letter-spacing: .07em; }
+  .reftable code { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; background: #f3ede7; padding: 1px 6px; border-radius: 5px; color: var(--accent-deep); white-space: nowrap; }
+  .reftable .what { color: var(--ink-soft); }
+  .reftable .when { white-space: nowrap; color: var(--ink); font-weight: 600; }
 
   /* Failure modes */
   .lead-card {
@@ -267,8 +263,8 @@
       <span><b>6</b> slash commands</span>
       <span><b>5</b> lifecycle hooks</span>
       <span><b>3</b> subagents</span>
+      <span><b>4</b> state files</span>
       <span><b>5</b> complementary skills</span>
-      <span><b>MIT</b> licensed</span>
     </div>
   </div>
 </header>
@@ -277,68 +273,188 @@
 <section class="dark" id="how">
   <div class="wrap">
     <h2>How an mg-harness session works</h2>
-    <p class="lede">You drive the <strong style="color:#fff">rituals</strong> — the six numbered steps. Around them, hooks and subagents fire <strong style="color:#fff">automatically</strong>. Because state lives in files, the work survives context limits and resumes cleanly next session.</p>
+    <p class="lede">A single task, top to bottom. You drive the <strong style="color:#fff">commands</strong>; the <strong style="color:#fff">hooks</strong>, <strong style="color:#fff">subagents</strong>, and <strong style="color:#fff">state files</strong> work around them. Each step lists exactly what fires.</p>
 
-    <!-- lifecycle spine -->
-    <div class="flow">
-      <div class="phase">
-        <div class="pnum">1</div>
-        <div class="pcmd">/start-work</div>
-        <p>Branches, bootstraps the state files, drafts a plan before any code.</p>
-        <span class="agent">📐 planner drafts the plan</span>
-      </div>
-      <div class="arrow">→</div>
-      <div class="phase">
-        <div class="pnum">2</div>
-        <div class="pcmd">build</div>
-        <p>Work the checklist. Every edit is bracketed by hooks (below).</p>
-      </div>
-      <div class="arrow">→</div>
-      <div class="phase">
-        <div class="pnum">3</div>
-        <div class="pcmd">/checkpoint</div>
-        <p>Saves state, appends the changelog, commits. Nothing is lost.</p>
-      </div>
-      <div class="arrow">→</div>
-      <div class="phase">
-        <div class="pnum">4</div>
-        <div class="pcmd">/verify</div>
-        <p>Runs the tests for real, then an independent audit against the plan.</p>
-        <span class="agent">🔍 reviewer audits &amp; re-tests</span>
-      </div>
-      <div class="arrow">→</div>
-      <div class="phase">
-        <div class="pnum">5</div>
-        <div class="pcmd">/compact <span class="opt">~50% ctx</span></div>
-        <p>Writes a dense handoff and resets context before it degrades.</p>
-      </div>
-      <div class="arrow">→</div>
-      <div class="phase">
-        <div class="pnum">6</div>
-        <div class="pcmd">/finish-work</div>
-        <p>One last verify, a clean handoff, push, and an optional PR.</p>
-      </div>
+    <div class="legend">
+      <span class="tag t-cmd">command — you run it</span>
+      <span class="tag t-hook">hook — fires automatically</span>
+      <span class="tag t-agent">subagent</span>
+      <span class="tag t-file">state file</span>
+      <span class="tag t-skill">skill</span>
     </div>
 
-    <!-- always-on hooks band -->
-    <div class="rail">
-      <div class="rail-label">Running the whole time — automatic, no command needed</div>
-      <div class="guards">
-        <div class="guard"><span class="gi">📖</span><b>Session start</b>Loads your state files into context, so you resume — not restart.</div>
-        <div class="guard"><span class="gi">📌</span><b>Every prompt</b>Re-anchors the plan, so the agent doesn't drift off-task.</div>
-        <div class="guard"><span class="gi">🛂</span><b>Before each edit</b>Runs your verify command; blocks the change if it breaks the build.</div>
-        <div class="guard"><span class="gi">📝</span><b>After each edit</b>Logs the change to the changelog automatically.</div>
-        <div class="guard"><span class="gi">⏰</span><b>On stop</b>Nudges you to checkpoint if there's unsaved progress.</div>
+    <div class="tl">
+
+      <div class="tlnode">
+        <div class="tldot evt">▸</div>
+        <div class="tlcard">
+          <div class="h"><span class="cmd">Session start</span><span class="when">automatic, on open</span></div>
+          <p>The state files are rehydrated into context — so the agent resumes, it doesn't restart.</p>
+          <div class="tlchips">
+            <span class="tag t-hook">🪝 <span class="mono">load-state.sh</span></span>
+            <span class="tag t-file">reads <span class="mono">state.md</span></span>
+            <span class="tag t-file">reads <span class="mono">plan.md</span></span>
+            <span class="tag t-file">reads <span class="mono">handoff.md</span></span>
+            <span class="tag t-file">reads <span class="mono">CHANGELOG.md</span></span>
+          </div>
+        </div>
       </div>
+
+      <div class="tlnode">
+        <div class="tldot">1</div>
+        <div class="tlcard">
+          <div class="h"><span class="cmd">/start-work</span><span class="when">you run it</span></div>
+          <p>Branches, seeds the four state files from templates, and plans before any code is written.</p>
+          <div class="tlchips">
+            <span class="tag t-cmd">⌘ <span class="mono">/start-work</span></span>
+            <span class="tag t-agent">🤖 planner</span>
+            <span class="tag t-file">writes <span class="mono">plan.md</span></span>
+            <span class="tag t-file">creates <span class="mono">state.md</span></span>
+            <span class="tag t-skill">◆ karpathy-coding-guidelines</span>
+            <span class="tag t-skill">◆ state-discipline</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="persist">
+        <span class="pk">Every prompt</span>
+        <span><span style="color:#92c2ef;font-weight:600">drift-check.sh</span> (UserPromptSubmit hook) re-injects the <span class="mono" style="color:#cfd3da">plan.md</span> objective + open checklist items, so the agent can't quietly drift off the plan.</span>
+      </div>
+
+      <div class="tlnode">
+        <div class="tldot">2</div>
+        <div class="tlcard">
+          <div class="h"><span class="cmd">build</span><span class="when">the work loop</span></div>
+          <p>Work the checklist top-to-bottom. <strong style="color:#fff">Every edit is bracketed by two hooks</strong> — a gate before, a log after.</p>
+          <div class="tlchips">
+            <span class="tag t-skill">◆ karpathy-coding-guidelines</span>
+            <span class="tag t-hook">🪝 verify-edit.sh — before each edit</span>
+            <span class="tag t-hook">🪝 post-edit-log.sh → CHANGELOG.md — after each edit</span>
+            <span class="tag t-agent">🤖 researcher — when a question needs digging</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tlnode">
+        <div class="tldot">3</div>
+        <div class="tlcard">
+          <div class="h"><span class="cmd">/checkpoint</span><span class="when">every 15–20 min</span></div>
+          <p>A lightweight save point: update the session state, summarize progress, commit. Nothing is lost.</p>
+          <div class="tlchips">
+            <span class="tag t-cmd">⌘ <span class="mono">/checkpoint</span></span>
+            <span class="tag t-file">updates <span class="mono">state.md</span></span>
+            <span class="tag t-file">appends <span class="mono">CHANGELOG.md</span></span>
+            <span class="tag t-skill">◆ state-discipline</span>
+            <span class="tag t-git">git commit</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tlnode">
+        <div class="tldot">4</div>
+        <div class="tlcard">
+          <div class="h"><span class="cmd">/verify</span><span class="when">before review</span></div>
+          <p>The quality gate: run the tests for real, audit the diff against the plan, then an independent review.</p>
+          <div class="tlchips">
+            <span class="tag t-cmd">⌘ <span class="mono">/verify</span></span>
+            <span class="tag t-git">runs test_command</span>
+            <span class="tag t-file">reads <span class="mono">plan.md</span></span>
+            <span class="tag t-agent">🤖 reviewer</span>
+            <span class="tag t-skill">◆ karpathy-coding-guidelines (rubric)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tlnode">
+        <div class="tldot">5</div>
+        <div class="tlcard">
+          <div class="h"><span class="cmd">/compact</span><span class="when">at ~50% context</span></div>
+          <p>Before context degrades, write a dense handoff a fresh session can read in 60 seconds, then reset.</p>
+          <div class="tlchips">
+            <span class="tag t-cmd">⌘ <span class="mono">/compact</span></span>
+            <span class="tag t-file">writes <span class="mono">handoff.md</span></span>
+            <span class="tag t-file">updates <span class="mono">state.md</span></span>
+            <span class="tag t-file">appends <span class="mono">CHANGELOG.md</span></span>
+            <span class="tag t-skill">◆ state-discipline</span>
+            <span class="tag t-git">git commit</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tlnode">
+        <div class="tldot">6</div>
+        <div class="tlcard">
+          <div class="h"><span class="cmd">/finish-work</span><span class="when">task complete</span></div>
+          <p>One last verify, a final state + changelog summary, push, and an optional PR via the GitHub CLI.</p>
+          <div class="tlchips">
+            <span class="tag t-cmd">⌘ <span class="mono">/finish-work</span></span>
+            <span class="tag t-cmd">runs /verify</span>
+            <span class="tag t-agent">🤖 reviewer</span>
+            <span class="tag t-file">updates <span class="mono">state.md</span></span>
+            <span class="tag t-file">appends <span class="mono">CHANGELOG.md</span></span>
+            <span class="tag t-git">git push · gh PR</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tlnode">
+        <div class="tldot evt">▸</div>
+        <div class="tlcard">
+          <div class="h"><span class="cmd">Session end</span><span class="when">automatic, on stop</span></div>
+          <p>Before the turn ends, a freshness check makes sure progress was actually saved.</p>
+          <div class="tlchips">
+            <span class="tag t-hook">🪝 checkpoint-freshness.sh — nudges /checkpoint if state is stale or changes are uncommitted</span>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <div class="principle"><b>Files are the source of truth — not chat.</b> State persists across sessions; the conversation is disposable. That single rule is what makes the work durable.</div>
+    <div class="principle"><b>Files are the source of truth — not chat.</b> Three of the hooks fire on their own the entire time: the plan is re-anchored on every prompt, and every edit is gated then logged. The conversation is disposable; the files persist.</div>
+  </div>
+</section>
 
-    <div class="agentstrip">
-      <div class="agentcard"><b>planner</b> — turns a task into an objective and a checklist before any code is written.</div>
-      <div class="agentcard"><b>reviewer</b> — independent audit: re-runs tests, checks the diff against the plan, verifies claims.</div>
-      <div class="agentcard"><b>researcher</b> — bounded codebase investigation, dispatched when a question needs digging.</div>
-    </div>
+<!-- ===== COMPLETE TRIGGER REFERENCE ===== -->
+<section class="alt" id="triggers">
+  <div class="wrap">
+    <h2>Every trigger, and when</h2>
+    <p class="lede">The full inventory — each hook, command, subagent, state file, and skill, with exactly what sets it off. Nothing fires that isn't listed here.</p>
+    <table class="reftable">
+      <tr><th style="width:24%">Component</th><th style="width:26%">Triggered when</th><th>What it does</th></tr>
+
+      <tr class="grp"><td colspan="3">Hooks — fire automatically, no command</td></tr>
+      <tr><td><code>load-state.sh</code></td><td class="when">Session start</td><td class="what">Reads <code>state.md</code>, <code>plan.md</code>, <code>handoff.md</code> &amp; recent <code>CHANGELOG.md</code> and injects them into the opening context.</td></tr>
+      <tr><td><code>drift-check.sh</code></td><td class="when">Every user prompt</td><td class="what">Re-injects the plan's objective + unchecked checklist items so the agent stays on-task.</td></tr>
+      <tr><td><code>verify-edit.sh</code></td><td class="when">Before each <code>Edit/Write/MultiEdit</code></td><td class="what">Runs your <code>verify_command</code>; blocks the edit (and feeds back the error) if the build is broken.</td></tr>
+      <tr><td><code>post-edit-log.sh</code></td><td class="when">After each <code>Edit/Write/MultiEdit</code></td><td class="what">Appends a one-line entry to <code>CHANGELOG.md</code> recording the change.</td></tr>
+      <tr><td><code>checkpoint-freshness.sh</code></td><td class="when">On stop / session end</td><td class="what">Nudges you to <code>/checkpoint</code> if <code>state.md</code> is stale or there are uncommitted changes.</td></tr>
+
+      <tr class="grp"><td colspan="3">Commands — you invoke them</td></tr>
+      <tr><td><code>/start-work</code></td><td class="when">Beginning a task</td><td class="what">Branches, seeds the four state files, dispatches <strong>planner</strong>, loads <strong>karpathy-coding-guidelines</strong> before coding.</td></tr>
+      <tr><td><code>/plan</code></td><td class="when">Plan needs revising</td><td class="what">Re-dispatches <strong>planner</strong> to rewrite <code>plan.md</code>, preserving completed items.</td></tr>
+      <tr><td><code>/checkpoint</code></td><td class="when">Every 15–20 min</td><td class="what">Updates <code>state.md</code>, appends <code>CHANGELOG.md</code>, commits.</td></tr>
+      <tr><td><code>/compact</code></td><td class="when">~50% context use</td><td class="what">Writes <code>handoff.md</code>, refreshes <code>state.md</code>/<code>CHANGELOG.md</code>, commits, prepares a reset.</td></tr>
+      <tr><td><code>/verify</code></td><td class="when">Before review</td><td class="what">Runs <code>test_command</code>, audits the diff vs <code>plan.md</code>, dispatches <strong>reviewer</strong>.</td></tr>
+      <tr><td><code>/finish-work</code></td><td class="when">Task complete</td><td class="what">Runs <code>/verify</code>, finalizes state + changelog, pushes, opens a PR if <code>gh</code> is available.</td></tr>
+
+      <tr class="grp"><td colspan="3">Subagents — dispatched via the Task tool</td></tr>
+      <tr><td><code>planner</code></td><td class="when">By <code>/start-work</code> &amp; <code>/plan</code></td><td class="what">Surveys the codebase and writes <code>plan.md</code> only — never application code.</td></tr>
+      <tr><td><code>reviewer</code></td><td class="when">By <code>/verify</code> &amp; <code>/finish-work</code></td><td class="what">Re-runs tests, audits the diff against the plan, verifies library/API/import claims. Read-only.</td></tr>
+      <tr><td><code>researcher</code></td><td class="when">Ad-hoc, when investigating</td><td class="what">Bounded codebase investigation; returns a compressed report. Never modifies code.</td></tr>
+
+      <tr class="grp"><td colspan="3">State files — <code>.claude/state/</code></td></tr>
+      <tr><td><code>plan.md</code></td><td class="when">Written at start; read every prompt</td><td class="what">Objective + checklist. Written by <strong>planner</strong>; read by <code>drift-check</code>, <code>/verify</code>, <code>/compact</code>, <code>/finish-work</code>.</td></tr>
+      <tr><td><code>state.md</code></td><td class="when">Updated every checkpoint</td><td class="what">Where the session is right now (status, next step). Capped short; read by <code>load-state</code>.</td></tr>
+      <tr><td><code>handoff.md</code></td><td class="when">Written at every <code>/compact</code></td><td class="what">Dense summary for the next session; re-injected by <code>load-state</code> on resume.</td></tr>
+      <tr><td><code>CHANGELOG.md</code></td><td class="when">Appended after each edit + checkpoint</td><td class="what">Append-only history, incl. failed approaches. Auto-appended by <code>post-edit-log.sh</code>.</td></tr>
+
+      <tr class="grp"><td colspan="3">Skills — auto-triggered by intent</td></tr>
+      <tr><td><code>karpathy-coding-guidelines</code></td><td class="when">Writing/editing code</td><td class="what">Minimal diffs, explicit assumptions, no speculative abstraction. Loaded by <code>/start-work</code>; the reviewer's rubric.</td></tr>
+      <tr><td><code>state-discipline</code></td><td class="when">Touching <code>.claude/state/*</code></td><td class="what">Enforces the format of the four state files and the append-only changelog rule.</td></tr>
+      <tr><td><code>linear-triage-automation</code></td><td class="when">Triaging Linear issues <span style="color:var(--muted)">· complementary</span></td><td class="what">Duplicate detection, free-text priority parsing, owner assignment, clearing the Triage column.</td></tr>
+      <tr><td><code>linear-handoff</code></td><td class="when">Handing off Linear tickets <span style="color:var(--muted)">· complementary</span></td><td class="what">Gathers Linear + git/PR state per ticket, posts a structured handoff comment, then reassigns.</td></tr>
+      <tr><td><code>morning-briefing</code></td><td class="when">Scheduled, daily <span style="color:var(--muted)">· complementary</span></td><td class="what">Scans Slack + email over 24h, posts a four-section rollup: asks, mentions, updates, blockers.</td></tr>
+    </table>
   </div>
 </section>
 
