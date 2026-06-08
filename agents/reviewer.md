@@ -57,6 +57,7 @@ Default to **CONCERNS** if you're unsure. The parent can override; you cannot.
 - **Audit against `karpathy-coding-guidelines`.** Read the skill, then check the diff against its four rules — think before coding, simplicity first, surgical changes, goal-driven execution. The core gate: *every changed line should trace directly to the user's request or a plan item.*
 - **Cite paths and lines.** Every finding needs `path:line`. No vague "the auth code has issues."
 - **Run the tests.** Don't trust that they passed; run them yourself if a test command is available.
+- **Verify claims, not just the diff.** If the work asserts that a library, API, or import behaves a certain way, confirm it against the dependency manifest or the actual package — don't accept asserted behavior. Flag any claim you can't confirm as unverified.
 
 ## What you do NOT do
 
