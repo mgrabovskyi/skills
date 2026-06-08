@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>mg-harness — Claude Code skills &amp; harness for engineering leaders</title>
-<meta name="description" content="Claude Code skills and harness rituals for engineering leaders. Auto-triggered expertise plus slash commands, hooks, and subagents for long-running, multi-session work." />
+<title>mg-harness — a durable Claude Code workflow for long-running work</title>
+<meta name="description" content="mg-harness turns a single Claude Code chat into a durable, resumable workflow for long-running, multi-session engineering work — state files, planning and review subagents, and lifecycle hooks. Plus complementary skills for the rest of a leader's job." />
 <meta property="og:title" content="mg-harness" />
-<meta property="og:description" content="Claude Code skills and harness rituals for engineering leaders." />
+<meta property="og:description" content="A durable Claude Code workflow for long-running, multi-session work — plus complementary skills." />
 <meta property="og:type" content="website" />
 <style>
   :root {
@@ -18,6 +18,7 @@
     --card: #ffffff;
     --accent: #e0654a;
     --accent-deep: #c14a31;
+    --accent-soft: #fbeee9;
     --hero: #14161a;
     --hero-soft: #9aa1ab;
     --code-bg: #1b1e24;
@@ -64,16 +65,17 @@
   .hero .tag {
     font-size: clamp(18px, 2.4vw, 23px);
     color: #f2efe9;
-    max-width: 660px;
+    max-width: 680px;
     margin: 0 0 14px;
     font-weight: 500;
   }
   .hero .sub {
     font-size: 16.5px;
     color: var(--hero-soft);
-    max-width: 640px;
+    max-width: 660px;
     margin: 0 0 34px;
   }
+  .hero .sub b { color: #f2efe9; font-weight: 650; }
   .cta-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 30px; }
   .btn {
     display: inline-flex; align-items: center; gap: 8px;
@@ -109,30 +111,101 @@
   /* Sections */
   section { padding: 72px 0; }
   section.alt { background: #fff; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  section.dark { background: var(--hero); color: #fff; border-top: 1px solid #000; }
   h2 { font-size: clamp(26px, 4vw, 34px); letter-spacing: -0.01em; margin: 0 0 10px; font-weight: 800; }
-  .lede { color: var(--muted); font-size: 17px; max-width: 660px; margin: 0 0 36px; }
+  .lede { color: var(--muted); font-size: 17px; max-width: 700px; margin: 0 0 36px; }
+  section.dark .lede { color: var(--hero-soft); }
 
-  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .two { display: grid; grid-template-columns: 1.25fr 1fr; gap: 20px; align-items: stretch; }
   .surface {
     background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
     padding: 28px;
   }
+  .surface.lead { border: 2px solid var(--accent); box-shadow: 0 6px 30px rgba(224,101,74,.10); }
   .surface h3 { margin: 0 0 6px; font-size: 20px; }
   .surface .k { font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: var(--accent-deep); font-weight: 700; margin-bottom: 14px; }
+  .surface .k.soft { color: var(--muted); }
   .surface p { margin: 0 0 14px; color: var(--ink-soft); }
   .surface ul { margin: 0; padding-left: 18px; color: var(--ink-soft); }
   .surface li { margin-bottom: 6px; }
 
-  /* Failure mode cards */
+  /* ===== Session lifecycle visualization ===== */
+  .flow {
+    display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px;
+    margin: 4px 0 30px;
+  }
+  .phase {
+    flex: 1 1 150px; min-width: 150px;
+    background: #20242b; border: 1px solid #313742; border-radius: 12px;
+    padding: 16px 15px 15px; position: relative;
+  }
+  .phase .pnum {
+    width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff;
+    display: grid; place-items: center; font-weight: 800; font-size: 13px; margin-bottom: 11px;
+  }
+  .phase .pcmd {
+    font-family: ui-monospace, Menlo, monospace; font-size: 14px; font-weight: 650;
+    color: #fff; margin-bottom: 6px;
+  }
+  .phase .pcmd .opt { color: var(--hero-soft); font-weight: 400; font-size: 12px; }
+  .phase p { margin: 0; font-size: 13.5px; color: #c8ccd3; line-height: 1.5; }
+  .phase .agent {
+    display: inline-block; margin-top: 11px; font-size: 12px; font-weight: 600;
+    background: var(--accent-soft); color: var(--accent-deep);
+    border-radius: 999px; padding: 3px 10px;
+  }
+  .arrow { align-self: center; color: #4a505b; font-size: 20px; flex: 0 0 auto; }
+  @media (max-width: 760px) { .arrow { display: none; } }
+
+  .rail {
+    background: #20242b; border: 1px solid #313742; border-radius: 12px;
+    padding: 18px 20px; margin-bottom: 22px;
+  }
+  .rail .rail-label {
+    font-size: 12px; text-transform: uppercase; letter-spacing: .1em; font-weight: 700;
+    color: var(--accent); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .rail .rail-label::after { content: ""; flex: 1; height: 1px; background: #313742; }
+  .guards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  @media (max-width: 860px) { .guards { grid-template-columns: repeat(2, 1fr); } }
+  .guard {
+    background: #14161a; border: 1px solid #2a2e36; border-radius: 10px; padding: 12px 13px;
+    font-size: 13px; color: #c8ccd3;
+  }
+  .guard .gi { font-size: 16px; display: block; margin-bottom: 6px; }
+  .guard b { color: #fff; font-weight: 650; display: block; font-size: 12.5px; margin-bottom: 3px; }
+
+  .principle {
+    border-left: 3px solid var(--accent); padding: 6px 0 6px 18px;
+    font-size: 16px; color: #f2efe9; max-width: 720px;
+  }
+  .principle b { color: #fff; }
+
+  .agentstrip { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .agentcard {
+    background: #20242b; border: 1px solid #313742; border-radius: 10px; padding: 12px 15px;
+    flex: 1 1 200px; font-size: 13.5px; color: #c8ccd3;
+  }
+  .agentcard b { color: #fff; font-family: ui-monospace, Menlo, monospace; font-size: 13.5px; }
+
+  /* Failure modes */
+  .lead-card {
+    background: var(--card); border: 2px solid var(--accent); border-radius: var(--radius);
+    padding: 28px; margin-bottom: 18px; box-shadow: 0 6px 30px rgba(224,101,74,.08);
+  }
+  .lead-card .num { font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: .08em; }
+  .lead-card h3 { font-size: 22px; margin: 8px 0 10px; }
+  .lead-card p { margin: 0 0 14px; color: var(--ink-soft); font-size: 15.5px; max-width: 760px; }
   .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
   .card {
     background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
     padding: 24px; position: relative;
   }
-  .card .num { font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: .08em; }
-  .card h3 { font-size: 18px; margin: 8px 0 8px; }
+  .card h3 { font-size: 18px; margin: 0 0 8px; }
   .card p { margin: 0 0 12px; color: var(--ink-soft); font-size: 15px; }
   .pill { display: inline-block; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; background: #f3ede7; color: var(--accent-deep); padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); }
+  .complabel { font-size: 13px; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); font-weight: 700; margin: 0 0 14px; }
 
   /* Inventory */
   .inv { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
@@ -158,7 +231,7 @@
   pre.block .pfx { color: var(--accent); }
   pre.block .cmt { color: #6b7280; }
 
-  footer { background: var(--hero); color: var(--hero-soft); padding: 44px 0; font-size: 14.5px; }
+  footer { background: var(--hero); color: var(--hero-soft); padding: 44px 0; font-size: 14.5px; border-top: 1px solid #000; }
   footer a { color: #fff; }
   footer .row { display: flex; flex-wrap: wrap; gap: 18px; justify-content: space-between; align-items: center; }
 
@@ -175,8 +248,8 @@
   <div class="wrap">
     <span class="eyebrow">Claude Code plugin</span>
     <h1>mg-harness</h1>
-    <p class="tag">Claude Code skills &amp; harness rituals for engineering leaders.</p>
-    <p class="sub">Code is the easy part. A leader's job is wider — operational queues, communication, decisions, multi-week initiatives spanning dozens of sessions. mg-harness shapes Claude around that wider job: small, opinionated, built to make your week <em>less</em> reactive.</p>
+    <p class="tag">A durable Claude Code workflow for long-running, multi-session work.</p>
+    <p class="sub">Code is the easy part. The hard part is work that <b>outlives a single context window</b> — initiatives spanning dozens of chats. mg-harness is the harness for that: <b>state files</b> as the source of truth, <b>planning and review subagents</b>, and <b>lifecycle hooks</b> that keep an agent on-task across sessions. A handful of complementary skills cover the rest of a leader's job.</p>
 
     <div class="install">
       <div class="label">Install in Claude Code</div>
@@ -186,43 +259,113 @@
     </div>
 
     <div class="cta-row" style="margin-top:26px">
-      <a class="btn btn-primary" href="https://github.com/mgrabovskyi/skills">View on GitHub →</a>
-      <a class="btn btn-ghost" href="#quickstart">Quickstart</a>
+      <a class="btn btn-primary" href="#how">See how a session works ↓</a>
+      <a class="btn btn-ghost" href="https://github.com/mgrabovskyi/skills">View on GitHub →</a>
     </div>
 
     <div class="stats">
-      <span><b>5</b> skills</span>
       <span><b>6</b> slash commands</span>
-      <span><b>3</b> subagents</span>
       <span><b>5</b> lifecycle hooks</span>
+      <span><b>3</b> subagents</span>
+      <span><b>5</b> complementary skills</span>
       <span><b>MIT</b> licensed</span>
     </div>
   </div>
 </header>
 
+<!-- ===== THE VISUALIZATION ===== -->
+<section class="dark" id="how">
+  <div class="wrap">
+    <h2>How an mg-harness session works</h2>
+    <p class="lede">You drive the <strong style="color:#fff">rituals</strong> — the six numbered steps. Around them, hooks and subagents fire <strong style="color:#fff">automatically</strong>. Because state lives in files, the work survives context limits and resumes cleanly next session.</p>
+
+    <!-- lifecycle spine -->
+    <div class="flow">
+      <div class="phase">
+        <div class="pnum">1</div>
+        <div class="pcmd">/start-work</div>
+        <p>Branches, bootstraps the state files, drafts a plan before any code.</p>
+        <span class="agent">📐 planner drafts the plan</span>
+      </div>
+      <div class="arrow">→</div>
+      <div class="phase">
+        <div class="pnum">2</div>
+        <div class="pcmd">build</div>
+        <p>Work the checklist. Every edit is bracketed by hooks (below).</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="phase">
+        <div class="pnum">3</div>
+        <div class="pcmd">/checkpoint</div>
+        <p>Saves state, appends the changelog, commits. Nothing is lost.</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="phase">
+        <div class="pnum">4</div>
+        <div class="pcmd">/verify</div>
+        <p>Runs the tests for real, then an independent audit against the plan.</p>
+        <span class="agent">🔍 reviewer audits &amp; re-tests</span>
+      </div>
+      <div class="arrow">→</div>
+      <div class="phase">
+        <div class="pnum">5</div>
+        <div class="pcmd">/compact <span class="opt">~50% ctx</span></div>
+        <p>Writes a dense handoff and resets context before it degrades.</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="phase">
+        <div class="pnum">6</div>
+        <div class="pcmd">/finish-work</div>
+        <p>One last verify, a clean handoff, push, and an optional PR.</p>
+      </div>
+    </div>
+
+    <!-- always-on hooks band -->
+    <div class="rail">
+      <div class="rail-label">Running the whole time — automatic, no command needed</div>
+      <div class="guards">
+        <div class="guard"><span class="gi">📖</span><b>Session start</b>Loads your state files into context, so you resume — not restart.</div>
+        <div class="guard"><span class="gi">📌</span><b>Every prompt</b>Re-anchors the plan, so the agent doesn't drift off-task.</div>
+        <div class="guard"><span class="gi">🛂</span><b>Before each edit</b>Runs your verify command; blocks the change if it breaks the build.</div>
+        <div class="guard"><span class="gi">📝</span><b>After each edit</b>Logs the change to the changelog automatically.</div>
+        <div class="guard"><span class="gi">⏰</span><b>On stop</b>Nudges you to checkpoint if there's unsaved progress.</div>
+      </div>
+    </div>
+
+    <div class="principle"><b>Files are the source of truth — not chat.</b> State persists across sessions; the conversation is disposable. That single rule is what makes the work durable.</div>
+
+    <div class="agentstrip">
+      <div class="agentcard"><b>planner</b> — turns a task into an objective and a checklist before any code is written.</div>
+      <div class="agentcard"><b>reviewer</b> — independent audit: re-runs tests, checks the diff against the plan, verifies claims.</div>
+      <div class="agentcard"><b>researcher</b> — bounded codebase investigation, dispatched when a question needs digging.</div>
+    </div>
+  </div>
+</section>
+
 <section>
   <div class="wrap">
-    <h2>Two surfaces, one install</h2>
-    <p class="lede">Add the marketplace and install once. Two kinds of capability show up in your sessions.</p>
+    <h2>The harness, and skills alongside it</h2>
+    <p class="lede">One install, two kinds of capability — but they aren't co-equal. The harness is the point; the skills are complementary expertise for the rest of the job.</p>
     <div class="two">
-      <div class="surface">
-        <div class="k">Skills</div>
-        <h3>Auto-triggered expertise</h3>
-        <p>You describe what you want; the right skill loads itself. No commands to memorize — Claude triggers them by intent.</p>
-        <ul>
-          <li>Coding discipline that resists scope creep</li>
-          <li>Linear triage &amp; engineer handoffs</li>
-          <li>A scheduled morning briefing</li>
-        </ul>
-      </div>
-      <div class="surface">
-        <div class="k">Harness</div>
+      <div class="surface lead">
+        <div class="k">The harness — the core</div>
         <h3>Reliable multi-session work</h3>
         <p>Six slash commands, five lifecycle hooks, and three subagents that turn a single chat into a durable, resumable workflow.</p>
         <ul>
           <li>State files re-read on every session start</li>
+          <li>The plan re-anchored on every prompt</li>
           <li>Structured handoffs at every compaction</li>
           <li>A verification gate before work ships</li>
+        </ul>
+      </div>
+      <div class="surface">
+        <div class="k soft">Complementary skills</div>
+        <h3>Auto-triggered expertise</h3>
+        <p>You describe what you want; the right skill loads itself. No commands to memorize.</p>
+        <ul>
+          <li>Coding discipline that resists scope creep</li>
+          <li>Linear triage &amp; engineer handoffs</li>
+          <li>A scheduled morning briefing</li>
         </ul>
       </div>
     </div>
@@ -231,38 +374,37 @@
 
 <section class="alt">
   <div class="wrap">
-    <h2>Built to fix real failure modes</h2>
-    <p class="lede">Each skill and ritual exists because of a specific way applying a coding agent across the whole job breaks down.</p>
+    <h2>Why a harness, not just skills</h2>
+    <p class="lede">mg-harness exists for one failure mode above all. The complementary skills each fix a narrower one.</p>
+
+    <div class="lead-card">
+      <div class="num">THE REASON</div>
+      <h3>Multi-session work loses state</h3>
+      <p>The biggest work — strategy, migrations, multi-week initiatives — doesn't fit in one chat. You hit the context limit, stop for the day, and re-derive everything next time: what was decided, what failed, what's left. The harness makes that discipline automatic instead of relying on memory — state files, structured handoffs, drift detection, and a verification gate, all under the <code>/mg-harness:</code> namespace.</p>
+      <span class="pill">the harness</span> <span class="pill">state-discipline</span>
+    </div>
+
+    <p class="complabel">Complementary skills — narrower failure modes</p>
     <div class="cards">
       <div class="card">
-        <div class="num">01</div>
         <h3>The agent overbuilds</h3>
         <p>A small ask becomes a sprawling diff — adjacent code "improved," speculative abstractions added. Discipline loads <em>before</em> the first line is written.</p>
         <span class="pill">karpathy-coding-guidelines</span>
       </div>
       <div class="card">
-        <div class="num">02</div>
         <h3>Triage eats your week</h3>
         <p>The mechanical half of triage is solved; the judgment half burns calendar time. This layers on top of Linear's native triage, not in place of it.</p>
         <span class="pill">linear-triage-automation</span>
       </div>
       <div class="card">
-        <div class="num">03</div>
         <h3>Signal is scattered</h3>
         <p>Hundreds of unread items across Slack, Teams, and email. A scheduled task does the synthesis before you sit down each morning.</p>
         <span class="pill">morning-briefing</span>
       </div>
       <div class="card">
-        <div class="num">04</div>
         <h3>Handoffs lose context</h3>
         <p>Reassigned tickets arrive with a one-line comment and the new owner pays the tax. Context becomes the precondition for reassignment.</p>
         <span class="pill">linear-handoff</span>
-      </div>
-      <div class="card" style="grid-column: 1 / -1;">
-        <div class="num">05</div>
-        <h3>Multi-session work loses state</h3>
-        <p>The biggest work doesn't fit in one chat. You hit the context limit, stop for the day, and re-derive everything next time. The full harness — state files, structured handoffs, drift detection, and verification gates — makes the discipline automatic instead of relying on memory.</p>
-        <span class="pill">the harness</span> <span class="pill">state-discipline</span>
       </div>
     </div>
   </div>
@@ -271,16 +413,8 @@
 <section>
   <div class="wrap">
     <h2>What's inside</h2>
-    <p class="lede">Five skills, plus the harness surfaces — commands, subagents, and hooks under the <code>/mg-harness:</code> namespace.</p>
+    <p class="lede">The harness surfaces — commands, subagents, and hooks under the <code>/mg-harness:</code> namespace — plus five complementary skills.</p>
     <div class="inv">
-      <div>
-        <h3>Skills</h3>
-        <div class="skill"><span class="name">karpathy-coding-guidelines</span><span class="bucket">engineering</span><div class="desc">Minimal diffs, explicit assumptions, verifiable success criteria — pushes back on speculative abstraction and unrequested cleanup.</div></div>
-        <div class="skill"><span class="name">linear-triage-automation</span><span class="bucket">management</span><div class="desc">Handles the fuzzy half of issue triage — free-text priority parsing, duplicate confirmation, domain inference.</div></div>
-        <div class="skill"><span class="name">linear-handoff</span><span class="bucket">management</span><div class="desc">Gathers Linear + git/PR state per ticket, drafts a structured handoff comment, posts it before reassigning.</div></div>
-        <div class="skill"><span class="name">morning-briefing</span><span class="bucket">productivity</span><div class="desc">A recurring scheduled task that posts a four-section daily rollup: asks, mentions, updates, blockers.</div></div>
-        <div class="skill"><span class="name">state-discipline</span><span class="bucket">productivity</span><div class="desc">Auto-enforces the format of the harness state files when writing to <code>.claude/state/*</code>.</div></div>
-      </div>
       <div>
         <h3>Harness commands</h3>
         <table class="cmds">
@@ -295,6 +429,14 @@
         <div class="chips"><span class="chip">planner</span><span class="chip">researcher</span><span class="chip">reviewer</span></div>
         <h3 style="margin-top:30px">Lifecycle hooks</h3>
         <div class="chips"><span class="chip">SessionStart</span><span class="chip">UserPromptSubmit</span><span class="chip">PreToolUse</span><span class="chip">PostToolUse</span><span class="chip">Stop</span></div>
+      </div>
+      <div>
+        <h3>Complementary skills</h3>
+        <div class="skill"><span class="name">karpathy-coding-guidelines</span><span class="bucket">engineering</span><div class="desc">Minimal diffs, explicit assumptions, verifiable success criteria — pushes back on speculative abstraction and unrequested cleanup.</div></div>
+        <div class="skill"><span class="name">linear-triage-automation</span><span class="bucket">management</span><div class="desc">Handles the fuzzy half of issue triage — free-text priority parsing, duplicate confirmation, domain inference.</div></div>
+        <div class="skill"><span class="name">linear-handoff</span><span class="bucket">management</span><div class="desc">Gathers Linear + git/PR state per ticket, drafts a structured handoff comment, posts it before reassigning.</div></div>
+        <div class="skill"><span class="name">morning-briefing</span><span class="bucket">productivity</span><div class="desc">A recurring scheduled task that posts a four-section daily rollup: asks, mentions, updates, blockers.</div></div>
+        <div class="skill"><span class="name">state-discipline</span><span class="bucket">productivity</span><div class="desc">Auto-enforces the format of the harness state files when writing to <code>.claude/state/*</code>.</div></div>
       </div>
     </div>
   </div>
