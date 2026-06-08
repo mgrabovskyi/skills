@@ -260,7 +260,7 @@
     </div>
 
     <div class="stats">
-      <span><b>6</b> slash commands</span>
+      <span><b>7</b> slash commands</span>
       <span><b>6</b> lifecycle hooks</span>
       <span><b>3</b> subagents</span>
       <span><b>4</b> state files</span>
@@ -304,12 +304,38 @@
         <div class="tldot">1</div>
         <div class="tlcard">
           <div class="h"><span class="cmd">/start-work</span><span class="when">you run it</span></div>
-          <p>Branches, seeds the four state files from templates, and plans before any code is written.</p>
+          <p>Branches and seeds the four state files from templates — the scaffold for everything that follows.</p>
           <div class="tlchips">
             <span class="tag t-cmd">⌘ <span class="mono">/start-work</span></span>
+            <span class="tag t-file">creates <span class="mono">plan.md</span></span>
+            <span class="tag t-file">creates <span class="mono">state.md</span></span>
+            <span class="tag t-file">creates <span class="mono">handoff.md</span></span>
+            <span class="tag t-file">creates <span class="mono">CHANGELOG.md</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tlnode">
+        <div class="tldot">2</div>
+        <div class="tlcard">
+          <div class="h"><span class="cmd">/grill</span><span class="when">before planning · non-trivial</span></div>
+          <p>Interview one decision at a time to resolve the design <em>before</em> the planner drafts anything. Recommends an answer to each, explores the codebase to self-answer, and records settled decisions as durable state.</p>
+          <div class="tlchips">
+            <span class="tag t-cmd">⌘ <span class="mono">/grill</span></span>
+            <span class="tag t-file">writes <span class="mono">state.md</span> → ## Resolved decisions</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tlnode">
+        <div class="tldot">3</div>
+        <div class="tlcard">
+          <div class="h"><span class="cmd">plan</span><span class="when">the planner runs</span></div>
+          <p>The planner surveys the codebase and writes <span class="mono">plan.md</span>, honoring the resolved decisions — never relitigating them. No code without a plan.</p>
+          <div class="tlchips">
             <span class="tag t-agent">🤖 planner</span>
             <span class="tag t-file">writes <span class="mono">plan.md</span></span>
-            <span class="tag t-file">creates <span class="mono">state.md</span></span>
+            <span class="tag t-file">reads <span class="mono">state.md</span></span>
             <span class="tag t-skill">◆ karpathy-coding-guidelines</span>
             <span class="tag t-skill">◆ state-discipline</span>
           </div>
@@ -322,7 +348,7 @@
       </div>
 
       <div class="tlnode">
-        <div class="tldot">2</div>
+        <div class="tldot">4</div>
         <div class="tlcard">
           <div class="h"><span class="cmd">build</span><span class="when">the work loop</span></div>
           <p>Work the checklist top-to-bottom. <strong style="color:#fff">Every edit is bracketed by two hooks</strong> — a gate before, a log after.</p>
@@ -336,7 +362,7 @@
       </div>
 
       <div class="tlnode">
-        <div class="tldot">3</div>
+        <div class="tldot">5</div>
         <div class="tlcard">
           <div class="h"><span class="cmd">/checkpoint</span><span class="when">every 15–20 min</span></div>
           <p>A lightweight save point: update the session state, summarize progress, commit. Nothing is lost.</p>
@@ -351,7 +377,7 @@
       </div>
 
       <div class="tlnode">
-        <div class="tldot">4</div>
+        <div class="tldot">6</div>
         <div class="tlcard">
           <div class="h"><span class="cmd">/verify</span><span class="when">before review</span></div>
           <p>The quality gate: run the tests for real, audit the diff against the plan, then an independent review.</p>
@@ -366,7 +392,7 @@
       </div>
 
       <div class="tlnode">
-        <div class="tldot">5</div>
+        <div class="tldot">7</div>
         <div class="tlcard">
           <div class="h"><span class="cmd">/compact</span><span class="when">at ~50% context</span></div>
           <p>Before context degrades, write a dense handoff a fresh session can read in 60 seconds, then reset. A hook also fires on <em>automatic</em> compaction, so nothing is lost if context fills first.</p>
@@ -383,7 +409,7 @@
       </div>
 
       <div class="tlnode">
-        <div class="tldot">6</div>
+        <div class="tldot">8</div>
         <div class="tlcard">
           <div class="h"><span class="cmd">/finish-work</span><span class="when">task complete</span></div>
           <p>One last verify, a final state + changelog summary, push, and an optional PR via the GitHub CLI.</p>
@@ -433,6 +459,7 @@
 
       <tr class="grp"><td colspan="3">Commands — you invoke them</td></tr>
       <tr><td><code>/start-work</code></td><td class="when">Beginning a task</td><td class="what">Branches, seeds the four state files, dispatches <strong>planner</strong>, loads <strong>karpathy-coding-guidelines</strong> before coding.</td></tr>
+      <tr><td><code>/grill</code></td><td class="when">Before planning a non-trivial task</td><td class="what">Interviews you one decision at a time; records resolved decisions into <code>state.md</code> for the planner to honor.</td></tr>
       <tr><td><code>/plan</code></td><td class="when">Plan needs revising</td><td class="what">Re-dispatches <strong>planner</strong> to rewrite <code>plan.md</code>, preserving completed items.</td></tr>
       <tr><td><code>/checkpoint</code></td><td class="when">Every 15–20 min</td><td class="what">Updates <code>state.md</code>, appends <code>CHANGELOG.md</code>, commits.</td></tr>
       <tr><td><code>/compact</code></td><td class="when">~50% context use</td><td class="what">Writes <code>handoff.md</code>, refreshes <code>state.md</code>/<code>CHANGELOG.md</code>, commits, prepares a reset.</td></tr>
@@ -446,7 +473,7 @@
 
       <tr class="grp"><td colspan="3">State files — <code>.claude/state/</code></td></tr>
       <tr><td><code>plan.md</code></td><td class="when">Written at start; read every prompt</td><td class="what">Objective + checklist. Written by <strong>planner</strong>; read by <code>drift-check</code>, <code>/verify</code>, <code>/compact</code>, <code>/finish-work</code>.</td></tr>
-      <tr><td><code>state.md</code></td><td class="when">Updated every checkpoint</td><td class="what">Where the session is right now (status, next step). Capped short; read by <code>load-state</code>.</td></tr>
+      <tr><td><code>state.md</code></td><td class="when">Updated every checkpoint</td><td class="what">Where the session is right now (status, next step, and <code>## Resolved decisions</code> from <code>/grill</code>). Capped short; read by <code>load-state</code>.</td></tr>
       <tr><td><code>handoff.md</code></td><td class="when">Written at every <code>/compact</code></td><td class="what">Dense summary for the next session; re-injected by <code>load-state</code> on resume.</td></tr>
       <tr><td><code>CHANGELOG.md</code></td><td class="when">Appended after each edit + checkpoint</td><td class="what">Append-only history, incl. failed approaches. Auto-appended by <code>post-edit-log.sh</code>.</td></tr>
 
@@ -468,7 +495,7 @@
       <div class="surface lead">
         <div class="k">The harness — the core</div>
         <h3>Reliable multi-session work</h3>
-        <p>Six slash commands, five lifecycle hooks, and three subagents that turn a single chat into a durable, resumable workflow.</p>
+        <p>Seven slash commands, six lifecycle hooks, and three subagents that turn a single chat into a durable, resumable workflow.</p>
         <ul>
           <li>State files re-read on every session start</li>
           <li>The plan re-anchored on every prompt</li>
@@ -537,6 +564,7 @@
         <h3>Harness commands</h3>
         <table class="cmds">
           <tr><td class="c">/start-work</td><td>Branch, bootstrap state, dispatch the planner</td></tr>
+          <tr><td class="c">/grill</td><td>Resolve the decision tree before planning</td></tr>
           <tr><td class="c">/plan</td><td>Re-run the planner to revise the plan</td></tr>
           <tr><td class="c">/checkpoint</td><td>Update state, append the changelog, commit</td></tr>
           <tr><td class="c">/compact</td><td>Write a dense handoff at ~50% context</td></tr>
