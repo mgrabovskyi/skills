@@ -261,7 +261,7 @@
 
     <div class="stats">
       <span><b>6</b> slash commands</span>
-      <span><b>5</b> lifecycle hooks</span>
+      <span><b>6</b> lifecycle hooks</span>
       <span><b>3</b> subagents</span>
       <span><b>4</b> state files</span>
       <span><b>5</b> complementary skills</span>
@@ -369,13 +369,14 @@
         <div class="tldot">5</div>
         <div class="tlcard">
           <div class="h"><span class="cmd">/compact</span><span class="when">at ~50% context</span></div>
-          <p>Before context degrades, write a dense handoff a fresh session can read in 60 seconds, then reset.</p>
+          <p>Before context degrades, write a dense handoff a fresh session can read in 60 seconds, then reset. A hook also fires on <em>automatic</em> compaction, so nothing is lost if context fills first.</p>
           <div class="tlchips">
             <span class="tag t-cmd">⌘ <span class="mono">/compact</span></span>
             <span class="tag t-file">writes <span class="mono">handoff.md</span></span>
             <span class="tag t-file">updates <span class="mono">state.md</span></span>
             <span class="tag t-file">appends <span class="mono">CHANGELOG.md</span></span>
             <span class="tag t-skill">◆ state-discipline</span>
+            <span class="tag t-hook">🪝 precompact-handoff.sh — also on auto-compaction</span>
             <span class="tag t-git">git commit</span>
           </div>
         </div>
@@ -428,6 +429,7 @@
       <tr><td><code>verify-edit.sh</code></td><td class="when">Before each <code>Edit/Write/MultiEdit</code></td><td class="what">Runs your <code>verify_command</code>; blocks the edit (and feeds back the error) if the build is broken.</td></tr>
       <tr><td><code>post-edit-log.sh</code></td><td class="when">After each <code>Edit/Write/MultiEdit</code></td><td class="what">Appends a one-line entry to <code>CHANGELOG.md</code> recording the change.</td></tr>
       <tr><td><code>checkpoint-freshness.sh</code></td><td class="when">On stop / session end</td><td class="what">Nudges you to <code>/checkpoint</code> if <code>state.md</code> is stale or there are uncommitted changes.</td></tr>
+      <tr><td><code>precompact-handoff.sh</code></td><td class="when">Before compaction — manual <em>or</em> auto</td><td class="what">Guarantees a durable <code>handoff.md</code> snapshot before context is lost — the safety net for automatic compaction. Never blocks.</td></tr>
 
       <tr class="grp"><td colspan="3">Commands — you invoke them</td></tr>
       <tr><td><code>/start-work</code></td><td class="when">Beginning a task</td><td class="what">Branches, seeds the four state files, dispatches <strong>planner</strong>, loads <strong>karpathy-coding-guidelines</strong> before coding.</td></tr>
@@ -449,11 +451,11 @@
       <tr><td><code>CHANGELOG.md</code></td><td class="when">Appended after each edit + checkpoint</td><td class="what">Append-only history, incl. failed approaches. Auto-appended by <code>post-edit-log.sh</code>.</td></tr>
 
       <tr class="grp"><td colspan="3">Skills — auto-triggered by intent</td></tr>
-      <tr><td><code>karpathy-coding-guidelines</code></td><td class="when">Writing/editing code</td><td class="what">Minimal diffs, explicit assumptions, no speculative abstraction. Loaded by <code>/start-work</code>; the reviewer's rubric.</td></tr>
-      <tr><td><code>state-discipline</code></td><td class="when">Touching <code>.claude/state/*</code></td><td class="what">Enforces the format of the four state files and the append-only changelog rule.</td></tr>
-      <tr><td><code>linear-triage-automation</code></td><td class="when">Triaging Linear issues <span style="color:var(--muted)">· complementary</span></td><td class="what">Duplicate detection, free-text priority parsing, owner assignment, clearing the Triage column.</td></tr>
-      <tr><td><code>linear-handoff</code></td><td class="when">Handing off Linear tickets <span style="color:var(--muted)">· complementary</span></td><td class="what">Gathers Linear + git/PR state per ticket, posts a structured handoff comment, then reassigns.</td></tr>
-      <tr><td><code>morning-briefing</code></td><td class="when">Scheduled, daily <span style="color:var(--muted)">· complementary</span></td><td class="what">Scans Slack + email over 24h, posts a four-section rollup: asks, mentions, updates, blockers.</td></tr>
+      <tr><td><a href="https://github.com/mgrabovskyi/skills/blob/main/skills/engineering/karpathy-coding-guidelines/SKILL.md"><code>karpathy-coding-guidelines</code></a></td><td class="when">Writing/editing code</td><td class="what">Minimal diffs, explicit assumptions, no speculative abstraction. Loaded by <code>/start-work</code>; the reviewer's rubric.</td></tr>
+      <tr><td><a href="https://github.com/mgrabovskyi/skills/blob/main/skills/productivity/state-discipline/SKILL.md"><code>state-discipline</code></a></td><td class="when">Touching <code>.claude/state/*</code></td><td class="what">Enforces the format of the four state files and the append-only changelog rule.</td></tr>
+      <tr><td><a href="https://github.com/mgrabovskyi/skills/blob/main/skills/management/linear-triage-automation/SKILL.md"><code>linear-triage-automation</code></a></td><td class="when">Triaging Linear issues <span style="color:var(--muted)">· complementary</span></td><td class="what">Duplicate detection, free-text priority parsing, owner assignment, clearing the Triage column.</td></tr>
+      <tr><td><a href="https://github.com/mgrabovskyi/skills/blob/main/skills/management/linear-handoff/SKILL.md"><code>linear-handoff</code></a></td><td class="when">Handing off Linear tickets <span style="color:var(--muted)">· complementary</span></td><td class="what">Gathers Linear + git/PR state per ticket, posts a structured handoff comment, then reassigns.</td></tr>
+      <tr><td><a href="https://github.com/mgrabovskyi/skills/blob/main/skills/productivity/morning-briefing/SKILL.md"><code>morning-briefing</code></a></td><td class="when">Scheduled, daily <span style="color:var(--muted)">· complementary</span></td><td class="what">Scans Slack + email over 24h, posts a four-section rollup: asks, mentions, updates, blockers.</td></tr>
     </table>
   </div>
 </section>
@@ -544,15 +546,15 @@
         <h3 style="margin-top:30px">Subagents</h3>
         <div class="chips"><span class="chip">planner</span><span class="chip">researcher</span><span class="chip">reviewer</span></div>
         <h3 style="margin-top:30px">Lifecycle hooks</h3>
-        <div class="chips"><span class="chip">SessionStart</span><span class="chip">UserPromptSubmit</span><span class="chip">PreToolUse</span><span class="chip">PostToolUse</span><span class="chip">Stop</span></div>
+        <div class="chips"><span class="chip">SessionStart</span><span class="chip">UserPromptSubmit</span><span class="chip">PreToolUse</span><span class="chip">PostToolUse</span><span class="chip">Stop</span><span class="chip">PreCompact</span></div>
       </div>
       <div>
         <h3>Complementary skills</h3>
-        <div class="skill"><span class="name">karpathy-coding-guidelines</span><span class="bucket">engineering</span><div class="desc">Minimal diffs, explicit assumptions, verifiable success criteria — pushes back on speculative abstraction and unrequested cleanup.</div></div>
-        <div class="skill"><span class="name">linear-triage-automation</span><span class="bucket">management</span><div class="desc">Handles the fuzzy half of issue triage — free-text priority parsing, duplicate confirmation, domain inference.</div></div>
-        <div class="skill"><span class="name">linear-handoff</span><span class="bucket">management</span><div class="desc">Gathers Linear + git/PR state per ticket, drafts a structured handoff comment, posts it before reassigning.</div></div>
-        <div class="skill"><span class="name">morning-briefing</span><span class="bucket">productivity</span><div class="desc">A recurring scheduled task that posts a four-section daily rollup: asks, mentions, updates, blockers.</div></div>
-        <div class="skill"><span class="name">state-discipline</span><span class="bucket">productivity</span><div class="desc">Auto-enforces the format of the harness state files when writing to <code>.claude/state/*</code>.</div></div>
+        <div class="skill"><span class="name"><a href="https://github.com/mgrabovskyi/skills/blob/main/skills/engineering/karpathy-coding-guidelines/SKILL.md">karpathy-coding-guidelines</a></span><span class="bucket">engineering</span><div class="desc">Minimal diffs, explicit assumptions, verifiable success criteria — pushes back on speculative abstraction and unrequested cleanup.</div></div>
+        <div class="skill"><span class="name"><a href="https://github.com/mgrabovskyi/skills/blob/main/skills/management/linear-triage-automation/SKILL.md">linear-triage-automation</a></span><span class="bucket">management</span><div class="desc">Handles the fuzzy half of issue triage — free-text priority parsing, duplicate confirmation, domain inference.</div></div>
+        <div class="skill"><span class="name"><a href="https://github.com/mgrabovskyi/skills/blob/main/skills/management/linear-handoff/SKILL.md">linear-handoff</a></span><span class="bucket">management</span><div class="desc">Gathers Linear + git/PR state per ticket, drafts a structured handoff comment, posts it before reassigning.</div></div>
+        <div class="skill"><span class="name"><a href="https://github.com/mgrabovskyi/skills/blob/main/skills/productivity/morning-briefing/SKILL.md">morning-briefing</a></span><span class="bucket">productivity</span><div class="desc">A recurring scheduled task that posts a four-section daily rollup: asks, mentions, updates, blockers.</div></div>
+        <div class="skill"><span class="name"><a href="https://github.com/mgrabovskyi/skills/blob/main/skills/productivity/state-discipline/SKILL.md">state-discipline</a></span><span class="bucket">productivity</span><div class="desc">Auto-enforces the format of the harness state files when writing to <code>.claude/state/*</code>.</div></div>
       </div>
     </div>
   </div>
@@ -585,7 +587,7 @@
 <footer>
   <div class="wrap row">
     <div>Built by <a href="https://github.com/mgrabovskyi">Michael Grabovskyi</a> · MIT licensed</div>
-    <div><a href="https://github.com/mgrabovskyi/skills">github.com/mgrabovskyi/skills</a></div>
+    <div><a href="https://github.com/mgrabovskyi/skills">GitHub</a> · <a href="https://github.com/mgrabovskyi/skills/blob/main/CHANGELOG.md">Changelog</a></div>
   </div>
 </footer>
 
