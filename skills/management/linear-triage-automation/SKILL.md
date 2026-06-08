@@ -1,6 +1,6 @@
 ---
 name: linear-triage-automation
-description: Event-driven automation that runs when an issue enters a team's Triage column in Linear. Handles duplicate detection, priority parsing from free text, owner assignment via Triage Intelligence with domain-based fallback, and moving the issue out of Triage. Use when the user asks to "triage Linear issues", "auto-triage", "process the Triage queue", "set priority and assign", "clear the Triage column", "run Linear triage", or "run linear-triage-automation". Org-agnostic — expects a routing table and a triage fallback owner to be supplied by the calling team.
+description: Event-driven automation that runs when an issue enters a team's Triage column in Linear. Handles duplicate detection, priority parsing from free text, owner assignment via Triage Intelligence with domain-based fallback, and moving the issue out of Triage. Use when the user asks to "triage Linear issues", "auto-triage", "process the Triage queue", "set priority and assign", "clear the Triage column", "run Linear triage", or "run linear-triage-automation". Org-agnostic — expects a routing table and a triage fallback owner to be supplied by the calling team. Does NOT handle handing tickets between engineers (use linear-handoff), and does not cover anything expressible as a native Linear Triage Rule (label→assignee/priority/team) — those belong in Linear, not an agent.
 ---
 
 # Linear Triage Automation

@@ -1,6 +1,6 @@
 ---
 name: state-discipline
-description: Use whenever writing, updating, or reading the mg-harness state files (.claude/state/plan.md, state.md, handoff.md, CHANGELOG.md). Ensures consistent format and captures failed approaches. Triggers on phrases like "update state", "write handoff", "checkpoint", "log to changelog", or any modification of files under .claude/state/.
+description: Use whenever writing, updating, or reading the mg-harness state files (.claude/state/plan.md, state.md, handoff.md, CHANGELOG.md). Ensures consistent format and captures failed approaches. Triggers on phrases like "update state", "write handoff", "checkpoint", "log to changelog", or any modification of files under .claude/state/. Governs the *format* of those files only — it does NOT run the harness rituals themselves (checkpointing, compacting, and finishing work are the `/mg-harness:*` commands).
 ---
 
 # State discipline

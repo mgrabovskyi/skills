@@ -1,6 +1,6 @@
 ---
 name: linear-handoff
-description: Use when an engineer is handing off their open Linear tickets to another engineer — PTO coverage, role change, team transfer, sprint transition, or leaving the company. Triggers on phrases like "hand off my tickets to X", "transfer my Linear work to Y", "reassign my open issues with context", "I'm going on PTO, cover my tickets", "engineer handoff", "ticket transfer", or a slash-style "/handoff from=alice to=bob". Gathers Linear state plus git branch and PR status for each ticket, posts a structured handoff comment, and only reassigns after explicit confirmation. Requires a Linear MCP, git, and the gh CLI.
+description: Use when an engineer is handing off their open Linear tickets to another engineer — PTO coverage, role change, team transfer, sprint transition, or leaving the company. Triggers on phrases like "hand off my tickets to X", "transfer my Linear work to Y", "reassign my open issues with context", "I'm going on PTO, cover my tickets", "engineer handoff", "ticket transfer", or a slash-style "/handoff from=alice to=bob". Gathers Linear state plus git branch and PR status for each ticket, posts a structured handoff comment, and only reassigns after explicit confirmation. Requires a Linear MCP, git, and the gh CLI. Does NOT trigger for triaging the incoming Triage queue (use linear-triage-automation) or for routine status updates on tickets.
 ---
 
 # Linear Handoff
