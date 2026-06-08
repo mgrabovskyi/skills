@@ -14,7 +14,7 @@ The coding-agent ecosystem optimizes for engineers writing code. An engineering 
 That installs the plugin. Two surfaces show up:
 
 - **Skills** — auto-triggered expertise. You describe what you want; the right skill loads. No commands to memorize.
-- **Harness** — six slash commands (`/mg-harness:start-work`, `/mg-harness:checkpoint`, `/mg-harness:compact`, …), five lifecycle hooks, and three subagents that turn a single session into a reliable multi-session workflow.
+- **Harness** — six slash commands (`/mg-harness:start-work`, `/mg-harness:checkpoint`, `/mg-harness:compact`, …), six lifecycle hooks, and three subagents that turn a single session into a reliable multi-session workflow.
 
 After install, set the two userConfig values for the verification hooks:
 
@@ -96,7 +96,7 @@ The skill posts the comment **before** reassigning — the new owner never sees 
 
 **The Fix** is a *full harness*: state files the agent reads on every session start, structured handoffs at every compaction, and lifecycle rituals that make the discipline automatic instead of relying on you to remember it.
 
-Six slash commands, five hooks, three subagents, all under the `/mg-harness:` namespace:
+Six slash commands, six hooks, three subagents, all under the `/mg-harness:` namespace:
 
 | Command | When | What it does |
 |---|---|---|
@@ -107,13 +107,14 @@ Six slash commands, five hooks, three subagents, all under the `/mg-harness:` na
 | `/mg-harness:verify` | Before review | Runs `test_command` + dispatches the **reviewer** subagent |
 | `/mg-harness:finish-work` | Task complete | Verifies, pushes, optionally opens a PR via `gh` |
 
-And five hooks that run silently in the background:
+And six hooks that run silently in the background:
 
 - `SessionStart` — auto-injects `state.md`, `plan.md`, `handoff.md`, and the last 50 CHANGELOG entries into context
 - `UserPromptSubmit` — re-anchors the agent to the plan on every prompt (combats drift)
 - `PreToolUse(Edit/Write)` — runs your `verify_command` before any edit lands; exit 2 blocks the edit
 - `PostToolUse(Edit/Write)` — appends a one-line entry to `.claude/state/CHANGELOG.md` for every edit
 - `Stop` — nudges you to checkpoint if state is stale relative to recent diffs
+- `PreCompact` — on manual *or* automatic compaction, ensures a durable `handoff.md` snapshot exists so auto-compaction never wipes out un-handed-off work
 
 The bar to clear: a fresh agent reading `.claude/state/handoff.md` should be able to **act**, not summarize.
 
@@ -151,7 +152,7 @@ Three subagents in [`agents/`](agents/), invoked by the commands via the Task to
 - **[researcher](agents/researcher.md)** — bounded codebase investigation. Returns a compressed report.
 - **[reviewer](agents/reviewer.md)** — independent audit of diff vs. plan. Scores PASS / CONCERNS / FAIL.
 
-Five hook scripts in [`scripts/`](scripts/), wired in [`hooks/hooks.json`](hooks/hooks.json). See the [harness conventions doc](docs/harness-conventions.md) for the full rationale and how to use the state files day-to-day.
+Six hook scripts in [`scripts/`](scripts/), wired in [`hooks/hooks.json`](hooks/hooks.json), with a behavioral test suite in [`tests/run.sh`](tests/run.sh) (run in CI). See the [harness conventions doc](docs/harness-conventions.md) for the full rationale and how to use the state files day-to-day.
 
 ## Layout
 
@@ -169,11 +170,13 @@ Five hook scripts in [`scripts/`](scripts/), wired in [`hooks/hooks.json`](hooks
 ├── commands/                   # /mg-harness:* slash commands
 ├── agents/                     # planner, researcher, reviewer subagents
 ├── hooks/
-│   └── hooks.json              # SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop
+│   └── hooks.json              # SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop, PreCompact
 ├── scripts/                    # shell scripts invoked by hooks
+├── tests/                      # run.sh — behavioral tests for the hook scripts (CI)
 ├── templates/                  # state file templates (plan, state, handoff, CHANGELOG, project-CLAUDE)
 ├── docs/                       # notes and conventions (harness-conventions.md, workspace-conventions/)
 ├── CLAUDE.md                   # contributor rules for this repo
+├── CHANGELOG.md                # release history (keepachangelog format)
 └── README.md
 ```
 

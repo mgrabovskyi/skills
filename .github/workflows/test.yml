@@ -1,0 +1,30 @@
+name: hooks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck & jq
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck jq
+
+      - name: Configure git (the tests make commits)
+        run: |
+          git config --global user.email ci@example.com
+          git config --global user.name ci
+
+      # Hard gate: behavioral tests. A hook that no-ops fails here.
+      - name: Hook tests
+        run: bash tests/run.sh
+
+      # Advisory: style/lint. Surfaced in logs but does not gate the merge,
+      # since the behavioral tests above are the real safety net.
+      - name: shellcheck (advisory)
+        continue-on-error: true
+        run: shellcheck -S warning scripts/*.sh tests/run.sh
