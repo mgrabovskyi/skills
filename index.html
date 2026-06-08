@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>mg-harness — Claude Code skills &amp; harness for engineering leaders</title>
+<meta name="description" content="Claude Code skills and harness rituals for engineering leaders. Auto-triggered expertise plus slash commands, hooks, and subagents for long-running, multi-session work." />
+<meta property="og:title" content="mg-harness" />
+<meta property="og:description" content="Claude Code skills and harness rituals for engineering leaders." />
+<meta property="og:type" content="website" />
+<style>
+  :root {
+    --ink: #14161a;
+    --ink-soft: #3a3f47;
+    --muted: #6b7280;
+    --line: #e7e3dd;
+    --paper: #faf8f5;
+    --card: #ffffff;
+    --accent: #e0654a;
+    --accent-deep: #c14a31;
+    --hero: #14161a;
+    --hero-soft: #9aa1ab;
+    --code-bg: #1b1e24;
+    --radius: 14px;
+    --maxw: 1040px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent-deep); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  /* Hero */
+  .hero {
+    background: radial-gradient(120% 140% at 80% -10%, #23272e 0%, var(--hero) 55%);
+    color: #fff;
+    padding: 84px 0 72px;
+    border-bottom: 1px solid #000;
+  }
+  .eyebrow {
+    display: inline-block;
+    font-size: 12.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-size: clamp(40px, 7vw, 68px);
+    line-height: 1.02;
+    margin: 0 0 18px;
+    letter-spacing: -0.02em;
+    font-weight: 800;
+  }
+  .hero .tag {
+    font-size: clamp(18px, 2.4vw, 23px);
+    color: #f2efe9;
+    max-width: 660px;
+    margin: 0 0 14px;
+    font-weight: 500;
+  }
+  .hero .sub {
+    font-size: 16.5px;
+    color: var(--hero-soft);
+    max-width: 640px;
+    margin: 0 0 34px;
+  }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 30px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 20px; border-radius: 10px; font-weight: 650; font-size: 15px;
+    border: 1px solid transparent; cursor: pointer;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-deep); text-decoration: none; }
+  .btn-ghost { background: transparent; color: #fff; border-color: #3a3f47; }
+  .btn-ghost:hover { border-color: #6b7280; text-decoration: none; }
+
+  .install {
+    background: var(--code-bg);
+    border: 1px solid #2a2e36;
+    border-radius: 12px;
+    padding: 18px 18px 16px;
+    max-width: 560px;
+    position: relative;
+  }
+  .install .label { font-size: 12px; color: var(--hero-soft); margin-bottom: 10px; letter-spacing: .04em; }
+  .install code { display: block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 14.5px; color: #e8e6e1; white-space: pre; }
+  .install code .pfx { color: var(--accent); }
+  .copy {
+    position: absolute; top: 14px; right: 14px;
+    background: #2a2e36; color: #cfd3da; border: none; border-radius: 7px;
+    padding: 6px 11px; font-size: 12.5px; cursor: pointer; font-weight: 600;
+  }
+  .copy:hover { background: #353a44; }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 26px; margin-top: 34px; color: var(--hero-soft); font-size: 14.5px; }
+  .stats b { color: #fff; font-weight: 700; }
+
+  /* Sections */
+  section { padding: 72px 0; }
+  section.alt { background: #fff; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  h2 { font-size: clamp(26px, 4vw, 34px); letter-spacing: -0.01em; margin: 0 0 10px; font-weight: 800; }
+  .lede { color: var(--muted); font-size: 17px; max-width: 660px; margin: 0 0 36px; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .surface {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 28px;
+  }
+  .surface h3 { margin: 0 0 6px; font-size: 20px; }
+  .surface .k { font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: var(--accent-deep); font-weight: 700; margin-bottom: 14px; }
+  .surface p { margin: 0 0 14px; color: var(--ink-soft); }
+  .surface ul { margin: 0; padding-left: 18px; color: var(--ink-soft); }
+  .surface li { margin-bottom: 6px; }
+
+  /* Failure mode cards */
+  .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 24px; position: relative;
+  }
+  .card .num { font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: .08em; }
+  .card h3 { font-size: 18px; margin: 8px 0 8px; }
+  .card p { margin: 0 0 12px; color: var(--ink-soft); font-size: 15px; }
+  .pill { display: inline-block; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; background: #f3ede7; color: var(--accent-deep); padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); }
+
+  /* Inventory */
+  .inv { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+  .inv h3 { font-size: 15px; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); margin: 0 0 16px; }
+  .skill { padding: 14px 0; border-top: 1px solid var(--line); }
+  .skill:first-of-type { border-top: none; }
+  .skill .name { font-family: ui-monospace, Menlo, monospace; font-weight: 650; font-size: 14.5px; }
+  .skill .bucket { font-size: 11.5px; color: var(--accent-deep); text-transform: uppercase; letter-spacing: .08em; margin-left: 8px; }
+  .skill .desc { color: var(--ink-soft); font-size: 14px; margin-top: 3px; }
+  table.cmds { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  table.cmds td { padding: 10px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+  table.cmds tr:first-child td { border-top: none; }
+  table.cmds .c { font-family: ui-monospace, Menlo, monospace; color: var(--accent-deep); white-space: nowrap; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .chip { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; color: var(--ink-soft); }
+
+  /* Quickstart */
+  .steps { counter-reset: s; max-width: 720px; }
+  .step { counter-increment: s; position: relative; padding: 0 0 24px 46px; }
+  .step::before { content: counter(s); position: absolute; left: 0; top: -2px; width: 30px; height: 30px; background: var(--accent); color: #fff; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 14px; }
+  .step h4 { margin: 2px 0 8px; font-size: 17px; }
+  pre.block { background: var(--code-bg); color: #e8e6e1; border-radius: 10px; padding: 16px 18px; overflow-x: auto; font-size: 14px; font-family: ui-monospace, Menlo, monospace; margin: 6px 0 0; }
+  pre.block .pfx { color: var(--accent); }
+  pre.block .cmt { color: #6b7280; }
+
+  footer { background: var(--hero); color: var(--hero-soft); padding: 44px 0; font-size: 14.5px; }
+  footer a { color: #fff; }
+  footer .row { display: flex; flex-wrap: wrap; gap: 18px; justify-content: space-between; align-items: center; }
+
+  @media (max-width: 760px) {
+    .two, .cards, .inv { grid-template-columns: 1fr; }
+    section { padding: 52px 0; }
+    .hero { padding: 60px 0 52px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Claude Code plugin</span>
+    <h1>mg-harness</h1>
+    <p class="tag">Claude Code skills &amp; harness rituals for engineering leaders.</p>
+    <p class="sub">Code is the easy part. A leader's job is wider — operational queues, communication, decisions, multi-week initiatives spanning dozens of sessions. mg-harness shapes Claude around that wider job: small, opinionated, built to make your week <em>less</em> reactive.</p>
+
+    <div class="install">
+      <div class="label">Install in Claude Code</div>
+      <button class="copy" onclick="copyInstall(this)">Copy</button>
+      <code id="installCmd"><span class="pfx">/</span>plugin marketplace add mgrabovskyi/skills
+<span class="pfx">/</span>plugin install mg-harness@mg-harness</code>
+    </div>
+
+    <div class="cta-row" style="margin-top:26px">
+      <a class="btn btn-primary" href="https://github.com/mgrabovskyi/skills">View on GitHub →</a>
+      <a class="btn btn-ghost" href="#quickstart">Quickstart</a>
+    </div>
+
+    <div class="stats">
+      <span><b>5</b> skills</span>
+      <span><b>6</b> slash commands</span>
+      <span><b>3</b> subagents</span>
+      <span><b>5</b> lifecycle hooks</span>
+      <span><b>MIT</b> licensed</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Two surfaces, one install</h2>
+    <p class="lede">Add the marketplace and install once. Two kinds of capability show up in your sessions.</p>
+    <div class="two">
+      <div class="surface">
+        <div class="k">Skills</div>
+        <h3>Auto-triggered expertise</h3>
+        <p>You describe what you want; the right skill loads itself. No commands to memorize — Claude triggers them by intent.</p>
+        <ul>
+          <li>Coding discipline that resists scope creep</li>
+          <li>Linear triage &amp; engineer handoffs</li>
+          <li>A scheduled morning briefing</li>
+        </ul>
+      </div>
+      <div class="surface">
+        <div class="k">Harness</div>
+        <h3>Reliable multi-session work</h3>
+        <p>Six slash commands, five lifecycle hooks, and three subagents that turn a single chat into a durable, resumable workflow.</p>
+        <ul>
+          <li>State files re-read on every session start</li>
+          <li>Structured handoffs at every compaction</li>
+          <li>A verification gate before work ships</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2>Built to fix real failure modes</h2>
+    <p class="lede">Each skill and ritual exists because of a specific way applying a coding agent across the whole job breaks down.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="num">01</div>
+        <h3>The agent overbuilds</h3>
+        <p>A small ask becomes a sprawling diff — adjacent code "improved," speculative abstractions added. Discipline loads <em>before</em> the first line is written.</p>
+        <span class="pill">karpathy-coding-guidelines</span>
+      </div>
+      <div class="card">
+        <div class="num">02</div>
+        <h3>Triage eats your week</h3>
+        <p>The mechanical half of triage is solved; the judgment half burns calendar time. This layers on top of Linear's native triage, not in place of it.</p>
+        <span class="pill">linear-triage-automation</span>
+      </div>
+      <div class="card">
+        <div class="num">03</div>
+        <h3>Signal is scattered</h3>
+        <p>Hundreds of unread items across Slack, Teams, and email. A scheduled task does the synthesis before you sit down each morning.</p>
+        <span class="pill">morning-briefing</span>
+      </div>
+      <div class="card">
+        <div class="num">04</div>
+        <h3>Handoffs lose context</h3>
+        <p>Reassigned tickets arrive with a one-line comment and the new owner pays the tax. Context becomes the precondition for reassignment.</p>
+        <span class="pill">linear-handoff</span>
+      </div>
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="num">05</div>
+        <h3>Multi-session work loses state</h3>
+        <p>The biggest work doesn't fit in one chat. You hit the context limit, stop for the day, and re-derive everything next time. The full harness — state files, structured handoffs, drift detection, and verification gates — makes the discipline automatic instead of relying on memory.</p>
+        <span class="pill">the harness</span> <span class="pill">state-discipline</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>What's inside</h2>
+    <p class="lede">Five skills, plus the harness surfaces — commands, subagents, and hooks under the <code>/mg-harness:</code> namespace.</p>
+    <div class="inv">
+      <div>
+        <h3>Skills</h3>
+        <div class="skill"><span class="name">karpathy-coding-guidelines</span><span class="bucket">engineering</span><div class="desc">Minimal diffs, explicit assumptions, verifiable success criteria — pushes back on speculative abstraction and unrequested cleanup.</div></div>
+        <div class="skill"><span class="name">linear-triage-automation</span><span class="bucket">management</span><div class="desc">Handles the fuzzy half of issue triage — free-text priority parsing, duplicate confirmation, domain inference.</div></div>
+        <div class="skill"><span class="name">linear-handoff</span><span class="bucket">management</span><div class="desc">Gathers Linear + git/PR state per ticket, drafts a structured handoff comment, posts it before reassigning.</div></div>
+        <div class="skill"><span class="name">morning-briefing</span><span class="bucket">productivity</span><div class="desc">A recurring scheduled task that posts a four-section daily rollup: asks, mentions, updates, blockers.</div></div>
+        <div class="skill"><span class="name">state-discipline</span><span class="bucket">productivity</span><div class="desc">Auto-enforces the format of the harness state files when writing to <code>.claude/state/*</code>.</div></div>
+      </div>
+      <div>
+        <h3>Harness commands</h3>
+        <table class="cmds">
+          <tr><td class="c">/start-work</td><td>Branch, bootstrap state, dispatch the planner</td></tr>
+          <tr><td class="c">/plan</td><td>Re-run the planner to revise the plan</td></tr>
+          <tr><td class="c">/checkpoint</td><td>Update state, append the changelog, commit</td></tr>
+          <tr><td class="c">/compact</td><td>Write a dense handoff at ~50% context</td></tr>
+          <tr><td class="c">/verify</td><td>Run tests + dispatch the reviewer subagent</td></tr>
+          <tr><td class="c">/finish-work</td><td>Verify, push, optionally open a PR</td></tr>
+        </table>
+        <h3 style="margin-top:30px">Subagents</h3>
+        <div class="chips"><span class="chip">planner</span><span class="chip">researcher</span><span class="chip">reviewer</span></div>
+        <h3 style="margin-top:30px">Lifecycle hooks</h3>
+        <div class="chips"><span class="chip">SessionStart</span><span class="chip">UserPromptSubmit</span><span class="chip">PreToolUse</span><span class="chip">PostToolUse</span><span class="chip">Stop</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="quickstart">
+  <div class="wrap">
+    <h2>Quickstart</h2>
+    <p class="lede">Thirty seconds to install. Two optional config values unlock the verification hooks.</p>
+    <div class="steps">
+      <div class="step">
+        <h4>Add the marketplace &amp; install</h4>
+        <pre class="block"><span class="pfx">/</span>plugin marketplace add mgrabovskyi/skills
+<span class="pfx">/</span>plugin install mg-harness@mg-harness</pre>
+      </div>
+      <div class="step">
+        <h4>Configure the verification hooks <span style="color:var(--muted);font-weight:400;font-size:14px">(optional)</span></h4>
+        <pre class="block"><span class="pfx">/</span>plugin config mg-harness
+<span class="cmt"># set verify_command  e.g. npm run lint --silent</span>
+<span class="cmt"># set test_command    e.g. npm test --silent</span></pre>
+      </div>
+      <div class="step">
+        <h4>Start working</h4>
+        <pre class="block"><span class="pfx">/</span>mg-harness:start-work add JWT validation to the auth service</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap row">
+    <div>Built by <a href="https://github.com/mgrabovskyi">Michael Grabovskyi</a> · MIT licensed</div>
+    <div><a href="https://github.com/mgrabovskyi/skills">github.com/mgrabovskyi/skills</a></div>
+  </div>
+</footer>
+
+<script>
+  function copyInstall(btn) {
+    var text = "/plugin marketplace add mgrabovskyi/skills\n/plugin install mg-harness@mg-harness";
+    navigator.clipboard.writeText(text).then(function () {
+      var old = btn.textContent; btn.textContent = "Copied ✓";
+      setTimeout(function () { btn.textContent = old; }, 1600);
+    });
+  }
+</script>
+</body>
+</html>
