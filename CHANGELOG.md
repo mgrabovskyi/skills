@@ -6,6 +6,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 project uses [semantic versioning](https://semver.org/): patch for tweaks, minor for
 new surfaces (skills, commands, hooks), major for renames or removals.
 
+## [0.5.2] — 2026-06-08
+
+### Changed
+- Sharpened three skill descriptions with explicit `NOT` boundaries to improve routing accuracy (per the skills-authoring WHAT + WHEN + NOT principle): `linear-triage-automation` and `linear-handoff` now disambiguate from each other, and `state-discipline` clarifies it governs state-file *format*, not the `/mg-harness:*` rituals. Surfaced by a best-practices scorecard pass.
+
 ## [0.5.1] — 2026-06-08
 
 ### Added
@@ -39,6 +44,7 @@ new surfaces (skills, commands, hooks), major for renames or removals.
 
 mg-harness established as the primary plugin of `mgrabovskyi/skills`: six slash commands, five lifecycle hooks, three subagents, the `.claude/state/` file workflow, and the complementary skills (`karpathy-coding-guidelines`, `state-discipline`, `linear-triage-automation`, `linear-handoff`, `morning-briefing`). History before this point is in the git log.
 
+[0.5.2]: https://github.com/mgrabovskyi/skills/releases/tag/v0.5.2
 [0.5.1]: https://github.com/mgrabovskyi/skills/releases/tag/v0.5.1
 [0.5.0]: https://github.com/mgrabovskyi/skills/releases/tag/v0.5.0
 [0.4.0]: https://github.com/mgrabovskyi/skills/releases/tag/v0.4.0
