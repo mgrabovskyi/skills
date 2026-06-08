@@ -16,6 +16,20 @@
 
 **Verify before finishing.** Use `/mg-harness:verify` to run the full quality gate (tests + reviewer subagent). Never run `/mg-harness:finish-work` without a passing verify.
 
+## Honesty & verification
+
+The harness *enforces* verification on code — `verify-edit.sh` blocks an edit that breaks the build, and the `reviewer` subagent re-runs tests rather than trusting them. Hold everything you *say* to the same standard:
+
+**Don't claim what you haven't checked.** Before stating that a function, symbol, or import exists, confirm it — read the file or grep for it. Before saying a build or test passed, actually run it this session. Don't write code that depends on an unverified symbol.
+
+**Cite `path:line` for claims about existing code.** "Trust me" is not evidence. If you describe how existing code behaves, point to where it lives.
+
+**Never invent error messages, API responses, stack traces, or test output.** If you didn't see it, say so.
+
+**Ask before adding a dependency** the project doesn't already use.
+
+**"I don't know" and "I need to check first" are correct answers.** Log the open question in `state.md` and resolve it — don't paper over it with a confident guess. A guess that turns out wrong costs the next session far more than an admitted unknown, and `CHANGELOG.md` exists precisely so wrong turns aren't repeated.
+
 ## The commands
 
 | Command | When | What it does |
