@@ -6,6 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 project uses [semantic versioning](https://semver.org/): patch for tweaks, minor for
 new surfaces (skills, commands, hooks), major for renames or removals.
 
+## [0.5.0] — 2026-06-08
+
+### Added
+- **`/mg-harness:grill` command** — a relentless, one-question-at-a-time planning interrogation that resolves the decision tree *before* the planner drafts `plan.md`. It recommends an answer to every question, explores the codebase to self-answer rather than asking, and records settled decisions into `state.md` under `## Resolved decisions` (durable state, not chat). Wired into `start-work` as a recommended pre-planning step, and the planner now honors the resolved decisions. Adapted from Matt Pocock's `grill-me` skill ([mattpocock/skills](https://github.com/mattpocock/skills), MIT).
+- `## Resolved decisions` section added to the `state.md` template.
+
 ## [0.4.0] — 2026-06-08
 
 ### Added
@@ -25,6 +31,7 @@ new surfaces (skills, commands, hooks), major for renames or removals.
 
 mg-harness established as the primary plugin of `mgrabovskyi/skills`: six slash commands, five lifecycle hooks, three subagents, the `.claude/state/` file workflow, and the complementary skills (`karpathy-coding-guidelines`, `state-discipline`, `linear-triage-automation`, `linear-handoff`, `morning-briefing`). History before this point is in the git log.
 
+[0.5.0]: https://github.com/mgrabovskyi/skills/releases/tag/v0.5.0
 [0.4.0]: https://github.com/mgrabovskyi/skills/releases/tag/v0.4.0
 [0.3.1]: https://github.com/mgrabovskyi/skills/releases/tag/v0.3.1
 [0.3.0]: https://github.com/mgrabovskyi/skills/releases/tag/v0.3.0

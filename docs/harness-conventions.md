@@ -6,7 +6,7 @@
 
 **Files are the source of truth, not chat.** Every long-running task has a state directory at `.claude/state/` with four files (`plan.md`, `state.md`, `handoff.md`, `CHANGELOG.md`). These files persist; chat does not.
 
-**Every task starts with a plan.** Use `/mg-harness:start-work <description>` to begin. The planner subagent writes `.claude/state/plan.md` before any code is touched. No code without a plan.
+**Every task starts with a plan.** Use `/mg-harness:start-work <description>` to begin. The planner subagent writes `.claude/state/plan.md` before any code is touched. No code without a plan. For non-trivial work, `/mg-harness:grill` first — it interviews you one decision at a time to resolve the design, and the planner builds on those settled decisions instead of guessing.
 
 **Checkpoint often.** Use `/mg-harness:checkpoint` after meaningful changes. The act of pausing to summarize is the point.
 
@@ -35,6 +35,7 @@ The harness *enforces* verification on code — `verify-edit.sh` blocks an edit 
 | Command | When | What it does |
 |---|---|---|
 | `/mg-harness:start-work <description>` | Beginning a task | Branches, bootstraps state, plans |
+| `/mg-harness:grill [topic]` | Before planning a non-trivial task | Interviews you to resolve the decision tree; records decisions to state.md |
 | `/mg-harness:plan [note]` | Plan needs revision | Re-runs the planner subagent |
 | `/mg-harness:checkpoint [note]` | Every 15–20 min during work | Saves state, commits |
 | `/mg-harness:compact [focus]` | At ~50% context | Writes handoff, prepares for reset |

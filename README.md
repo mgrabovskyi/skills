@@ -14,7 +14,7 @@ The coding-agent ecosystem optimizes for engineers writing code. An engineering 
 That installs the plugin. Two surfaces show up:
 
 - **Skills** — auto-triggered expertise. You describe what you want; the right skill loads. No commands to memorize.
-- **Harness** — six slash commands (`/mg-harness:start-work`, `/mg-harness:checkpoint`, `/mg-harness:compact`, …), six lifecycle hooks, and three subagents that turn a single session into a reliable multi-session workflow.
+- **Harness** — seven slash commands (`/mg-harness:start-work`, `/mg-harness:grill`, `/mg-harness:checkpoint`, …), six lifecycle hooks, and three subagents that turn a single session into a reliable multi-session workflow.
 
 After install, set the two userConfig values for the verification hooks:
 
@@ -96,11 +96,12 @@ The skill posts the comment **before** reassigning — the new owner never sees 
 
 **The Fix** is a *full harness*: state files the agent reads on every session start, structured handoffs at every compaction, and lifecycle rituals that make the discipline automatic instead of relying on you to remember it.
 
-Six slash commands, six hooks, three subagents, all under the `/mg-harness:` namespace:
+Seven slash commands, six hooks, three subagents, all under the `/mg-harness:` namespace:
 
 | Command | When | What it does |
 |---|---|---|
 | `/mg-harness:start-work <description>` | Beginning a task | Branches, bootstraps `.claude/state/`, dispatches the **planner** subagent |
+| `/mg-harness:grill [topic]` | Before planning a non-trivial task | Interviews you one decision at a time; records resolved decisions to `state.md` |
 | `/mg-harness:plan [note]` | Plan needs revision | Re-runs the planner |
 | `/mg-harness:checkpoint [note]` | Every 15–20 min during work | Updates `state.md`, appends `CHANGELOG.md`, commits |
 | `/mg-harness:compact [focus]` | At ~50% context | Writes a dense `handoff.md` for the next session |
@@ -144,7 +145,7 @@ The bet behind this collection: the highest-leverage thing an engineering leader
 
 ### Harness — long-running work
 
-Six slash commands, listed above in failure mode #5. Each command file is in [`commands/`](commands/); each is a markdown file with frontmatter and can be edited directly.
+Seven slash commands, listed above in failure mode #5. Each command file is in [`commands/`](commands/); each is a markdown file with frontmatter and can be edited directly.
 
 Three subagents in [`agents/`](agents/), invoked by the commands via the Task tool:
 
