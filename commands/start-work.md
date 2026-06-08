@@ -37,11 +37,17 @@ Ensure `.claude/state/` exists in the project. If it doesn't, create it and seed
 
 If `.claude/state/` already exists with old files from a previous task, ask the user before overwriting.
 
-## 4. Plan
+## 4. Resolve the decision tree (recommended for non-trivial tasks)
+
+Before planning anything beyond a trivial change, run `/mg-harness:grill` to interview the user one decision at a time and settle the design *before* the planner drafts a plan. The grill records resolved decisions into `.claude/state/state.md` under `## Resolved decisions`, where the planner picks them up in the next step.
+
+Skip this only for genuinely small, unambiguous tasks. A plan built on un-grilled assumptions is the most common cause of a plan that's confidently wrong.
+
+## 5. Plan
 
 Dispatch the **planner** subagent (Task tool) with this brief:
 
-> Read the task description in `.claude/state/state.md`, survey the relevant parts of the codebase (use Read, Grep, Glob freely), and produce a structured plan written to `.claude/state/plan.md`. Follow the format in `${CLAUDE_PLUGIN_ROOT}/templates/plan.md`. Be specific — every checklist item should be small enough to verify in a single test, lint, or visual inspection. Do not implement; produce the plan file only.
+> Read the task description in `.claude/state/state.md` — including any `## Resolved decisions` recorded by the grill — survey the relevant parts of the codebase (use Read, Grep, Glob freely), and produce a structured plan written to `.claude/state/plan.md`. Follow the format in `${CLAUDE_PLUGIN_ROOT}/templates/plan.md`. Honor the resolved decisions; don't relitigate them. Be specific — every checklist item should be small enough to verify in a single test, lint, or visual inspection. Do not implement; produce the plan file only.
 
 After the planner returns:
 
@@ -50,7 +56,7 @@ After the planner returns:
 3. If yes: update `state.md` status to `"in-progress"` and start the first checklist item.
 4. If no: revise and re-dispatch the planner if needed.
 
-## 5. Establish the loop
+## 6. Establish the loop
 
 Once the plan is approved, **load and follow the `karpathy-coding-guidelines` skill before writing any code**: state assumptions before implementing, keep diffs minimal and surgical, no speculative abstraction or unrequested cleanup, and make sure every changed line traces back to a plan item. Then work the checklist top-to-bottom. After each meaningful change, run `/mg-harness:checkpoint`. At ~50% context use, run `/mg-harness:compact`. When done, run `/mg-harness:finish-work`.
 

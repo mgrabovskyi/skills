@@ -26,6 +26,10 @@
 - [ ] Step 3 ← currently here
 - [ ] Step 4
 
+## Resolved decisions
+
+<Decisions settled during `/mg-harness:grill`, one per line: "<decision>: <choice> — <reason>". The planner reads these and must honor them. If none, write "none.">
+
 ## Open questions
 
 <Questions waiting on the user. If none, write "none.">
