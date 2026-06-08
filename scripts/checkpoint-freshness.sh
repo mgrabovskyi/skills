@@ -13,6 +13,15 @@ PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 STATE_FILE="${PROJECT_DIR}/.claude/state/state.md"
 CHANGELOG="${PROJECT_DIR}/.claude/state/CHANGELOG.md"
 
+# Loop guard: if we already blocked once and Claude re-entered Stop, let it
+# stop instead of wedging the session. Without this, a state that can't be made
+# "fresh" (e.g. the user genuinely wants to stop dirty) leans on Claude Code's
+# consecutive-block backstop and forces a couple of "can't stop yet" rounds.
+INPUT="$(cat 2>/dev/null || true)"
+if printf '%s' "${INPUT}" | grep -q '"stop_hook_active"[[:space:]]*:[[:space:]]*true'; then
+  exit 0
+fi
+
 # No state file — nothing to check.
 if [[ ! -f "${STATE_FILE}" ]]; then
   exit 0

@@ -12,7 +12,7 @@
 
 **Capture failed approaches.** When something doesn't work, log it in `CHANGELOG.md` with the reason. This is the single highest-leverage thing the harness does — it keeps future sessions from repeating known mistakes.
 
-**Compact before you have to.** Use `/mg-harness:compact` at ~50% context. Don't let context degrade to the point of incoherence.
+**Compact before you have to.** Use `/mg-harness:compact` at ~50% context. Don't let context degrade to the point of incoherence. As a safety net, the `PreCompact` hook fires on *automatic* compaction too — if context fills before you compact by hand, it guarantees a baseline `handoff.md` snapshot so nothing is silently lost. The manual command still produces a richer handoff; the hook only fills the gap.
 
 **Verify before finishing.** Use `/mg-harness:verify` to run the full quality gate (tests + reviewer subagent). Never run `/mg-harness:finish-work` without a passing verify.
 
