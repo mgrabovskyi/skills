@@ -6,6 +6,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 project uses [semantic versioning](https://semver.org/): patch for tweaks, minor for
 new surfaces (skills, commands, hooks), major for renames or removals.
 
+## [0.5.1] — 2026-06-08
+
+### Added
+- **`tests/lint-skills.sh`** — structural lint enforcing the repo's listing rules: valid frontmatter (name/description) for every skill, command, and agent; skill `name` matches its directory; shippable skills listed in both their bucket README and the top-level README; deprecated/in-progress skills absent from the top-level README; and every bucket-README link resolves to a real skill. Wired into CI as a hard gate.
+
+### Fixed
+- `skills/productivity/README.md`: added the missing `state-discipline` entry and removed the stale `session-handoff` link (deprecated and moved). Both were caught by the new lint on its first run.
+
 ## [0.5.0] — 2026-06-08
 
 ### Added
@@ -31,6 +39,7 @@ new surfaces (skills, commands, hooks), major for renames or removals.
 
 mg-harness established as the primary plugin of `mgrabovskyi/skills`: six slash commands, five lifecycle hooks, three subagents, the `.claude/state/` file workflow, and the complementary skills (`karpathy-coding-guidelines`, `state-discipline`, `linear-triage-automation`, `linear-handoff`, `morning-briefing`). History before this point is in the git log.
 
+[0.5.1]: https://github.com/mgrabovskyi/skills/releases/tag/v0.5.1
 [0.5.0]: https://github.com/mgrabovskyi/skills/releases/tag/v0.5.0
 [0.4.0]: https://github.com/mgrabovskyi/skills/releases/tag/v0.4.0
 [0.3.1]: https://github.com/mgrabovskyi/skills/releases/tag/v0.3.1

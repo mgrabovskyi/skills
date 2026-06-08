@@ -23,8 +23,13 @@ jobs:
       - name: Hook tests
         run: bash tests/run.sh
 
+      # Hard gate: structural lint for skills, commands, and agents
+      # (frontmatter, name==dir, listing rules, bucket-README links resolve).
+      - name: Skills lint
+        run: bash tests/lint-skills.sh
+
       # Advisory: style/lint. Surfaced in logs but does not gate the merge,
       # since the behavioral tests above are the real safety net.
       - name: shellcheck (advisory)
         continue-on-error: true
-        run: shellcheck -S warning scripts/*.sh tests/run.sh
+        run: shellcheck -S warning scripts/*.sh tests/*.sh
